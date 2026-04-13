@@ -7,3 +7,4 @@
 /build
 /captures
 .cxx
+/src/main/kotlin/com/gigantic_tickets/urovo_scanning/urovo_message_interface.g.kt

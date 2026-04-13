@@ -5,55 +5,94 @@ import 'package:flutter/services.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ExampleApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _urovoScanningPlugin = UrovoScanning();
-
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _urovoScanningPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-  }
+class ExampleApp extends StatelessWidget {
+  const ExampleApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Plugin example app')),
-        body: Center(child: Text('Running on: $_platformVersion\n')),
-      ),
+      home: ScanScreen(),
     );
+  }
+}
+
+class ScanScreen extends StatelessWidget {
+  const ScanScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Urovo scanning app'),
+            actions: [
+              IconButton(onPressed: () {
+                showModalBottomSheet(context: context, builder: (context) {
+                  return ListView(children: [
+                    ListTile(title: Text("Settings"),),
+                    DeviceCompatibleSettingWidget(),
+                    ListTile(
+                      title: Text("rest of settings"),
+                      subtitle: Text("ETC"),
+                    ),
+                  ],);
+                });
+
+              }, icon: Icon(Icons.settings))
+            ],),
+          body: Column(children: [
+            Expanded(child: Center(child: BarcodeInfoWidget())),
+            FilledButton.icon(
+              onPressed: () {},
+              label: Text("Scan"),
+              icon: Icon(Icons.barcode_reader),)
+          ],),
+        ));
+  }
+}
+
+class DeviceCompatibleSettingWidget extends StatelessWidget {
+  DeviceCompatibleSettingWidget({super.key});
+
+  final _urovoScanningPlugin = UrovoScanning();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: _urovoScanningPlugin.isDeviceCompatible(),
+        builder: (context, value) {
+          var result = "unknown";
+          if (value.data == true) {
+            result = "Device is compatible";
+          } else if (value.data == false) {
+            result = "Not compatible";
+          } else {
+            result = "unknown";
+  }
+
+          return ListTile(
+            title: Text("Is device compatible"),
+            subtitle: Text(result),
+          );
+        });
+  }
+}
+
+class BarcodeInfoWidget extends StatelessWidget {
+  BarcodeInfoWidget({super.key});
+
+  final _urovoScanningPlugin = UrovoScanning();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: _urovoScanningPlugin.barcodeStream(),
+        builder: (context, value) {
+          final barcode = value.data ?? "unknown";
+          return Text("Barcode: $barcode");
+    });
   }
 }
