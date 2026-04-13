@@ -1,5 +1,6 @@
 package com.gigantic_tickets.urovo_scanning
 
+import BarcodeInfo
 import OnBarcodeChangedStreamHandler
 import UrovoMessageInterface
 import android.content.Context

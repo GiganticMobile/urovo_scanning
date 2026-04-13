@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 
 void main() {
@@ -91,8 +88,31 @@ class BarcodeInfoWidget extends StatelessWidget {
     return StreamBuilder(
         stream: _urovoScanningPlugin.barcodeStream(),
         builder: (context, value) {
-          final barcode = value.data ?? "unknown";
-          return Text("Barcode: $barcode");
+
+          return SizedBox(
+            height: 300,
+            child: ListView(children: [
+              ListTile(
+                title: Text("Barcode"),
+                subtitle: Text(value.data?.barcode ?? "unknown"),
+              ),
+              ListTile(
+                title: Text("Barcode in Bytes"),
+                subtitle: Text(
+                    (value.data?.barcodeBytes ?? []).isNotEmpty
+                        ? value.data?.barcodeBytes.toString() ?? 'unknown'
+                        : "unknown"),
+              ),
+              ListTile(
+                title: Text("Barcode Length"),
+                subtitle: Text(value.data?.length.toString() ?? "unknown"),
+              ),
+              ListTile(
+                title: Text("Barcode type"),
+                subtitle: Text(value.data?.type.toString() ?? "unknown"),
+              ),
+            ],),
+          );
     });
   }
 }

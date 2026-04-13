@@ -2,8 +2,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:urovo_scanning/urovo_message_interface.g.dart';
 
-import 'urovo_scanning_platform_interface.dart';
-
 class UrovoScanning {
 
   Future<bool> isDeviceCompatible() async {
@@ -22,7 +20,7 @@ class UrovoScanning {
     }
   }
 
-  Stream<String> barcodeStream() {
+  Stream<BarcodeInfo> barcodeStream() {
     final stream = onBarcodeChanged();
     return stream;
   }

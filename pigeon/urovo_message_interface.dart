@@ -38,8 +38,22 @@ abstract class UrovoMessageInterface {
 @EventChannelApi()
 abstract class UrovoBarcodeInterface {
 
-  String onBarcodeChanged();
+  BarcodeInfo onBarcodeChanged();
 
+}
+
+class BarcodeInfo {
+  final Uint8List barcodeBytes;
+  final String barcode;
+  final int length;
+  final int type;
+
+  BarcodeInfo({
+    required this.barcodeBytes,
+    required this.barcode,
+    required this.length,
+    required this.type,
+  });
 }
 
 //run pigeon command
