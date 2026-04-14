@@ -33,6 +33,36 @@ abstract class UrovoMessageInterface {
   @async
   String getDeviceManufacture();
 
+  //this allows the plugin to start a scan whenever the user
+  //wants.
+  //optional delay which if null defaults to 5 seconds
+  void startScanning(int? delay);
+
+  //this stops an already in progress scan
+  void stopScanning();
+
+  @async
+  bool isTriggerEnabled();
+
+  //this enables the physical scan buttons on the device
+  void enableTrigger();
+
+  //this disables the physical scan buttons on the device
+  void disableTrigger();
+
+  @async
+  TriggerMode getTriggerMode();
+
+  void setTriggerMode(TriggerMode mode);
+
+  @async
+  List<SymbologyCode> getSymbology();
+
+  void enableSymbology(SymbologyCode code);
+
+  void disableSymbology(SymbologyCode code);
+
+  void resetScanner();
 }
 
 @EventChannelApi()
@@ -53,6 +83,35 @@ class BarcodeInfo {
     required this.barcode,
     required this.length,
     required this.type,
+  });
+}
+
+enum TriggerMode {
+  //The scanner is only in operation as long as the physical scanning button is pressed
+  HOST,
+
+  //The scanner is only in operation for a short period of time after the physical
+  // scanning button is pressed
+  PULSE,
+
+  //The scanner is in operation as soon as the physical scanning button is
+  // pressed as it only turned off when these buttons are pressed again
+  CONTINUOUS
+}
+
+//Symbology is the kinds of codes the laser scanner is able to read
+class SymbologyCode {
+  //used as identification
+  String title;
+  //the id of the code the scanner understands
+  int index;
+  //if this code has been enabled
+  bool enabled;
+
+  SymbologyCode({
+    required this.title,
+    required this.index,
+    required this.enabled,
   });
 }
 

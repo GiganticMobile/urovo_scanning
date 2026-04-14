@@ -5,10 +5,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.device.ScanManager.DECODE_DATA_TAG
-import android.device.ScanManager.BARCODE_STRING_TAG
 import android.device.ScanManager.BARCODE_LENGTH_TAG
+import android.device.ScanManager.BARCODE_STRING_TAG
 import android.device.ScanManager.BARCODE_TYPE_TAG
+import android.device.ScanManager.DECODE_DATA_TAG
 import android.util.Log
 
 class BarcodeReceiver : BroadcastReceiver() {
@@ -19,10 +19,10 @@ class BarcodeReceiver : BroadcastReceiver() {
         this.callback = callback
     }
 
-    private val ACTION_CAPTURE_IMAGE: String = "scanner_capture_image_result"
+    private val ACTION_DECODE_DATA = "android.intent.ACTION_DECODE_DATA"
     override fun onReceive(context: Context?, intent: Intent?) {
         val action = intent?.action
-        if (ACTION_CAPTURE_IMAGE != action) {
+        if (ACTION_DECODE_DATA == action) {
             // Get results from the laser scanner
 
             val barcodeBytes: ByteArray? = intent?.getByteArrayExtra(DECODE_DATA_TAG)
@@ -49,12 +49,12 @@ class BarcodeReceiver : BroadcastReceiver() {
 
     companion object {
         fun register(context: Context, receiver: BarcodeReceiver, filter: IntentFilter) {
-            Log.i("BARCODE_RECEIVER", "on unregister receiver")
+            Log.d("BARCODE_RECEIVER", "on unregister receiver")
             context.registerReceiver(receiver, filter)
         }
 
         fun unregister(context: Context, receiver: BarcodeReceiver) {
-            Log.i("BARCODE_RECEIVER", "on unregister receiver")
+            Log.d("BARCODE_RECEIVER", "on unregister receiver")
             context.unregisterReceiver(receiver)
         }
     }

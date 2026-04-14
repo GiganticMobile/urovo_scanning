@@ -24,4 +24,49 @@ class UrovoScanning {
     final stream = onBarcodeChanged();
     return stream;
   }
+
+  void startScanning(int? delay) {
+    UrovoMessageInterface().startScanning(delay);
+  }
+
+  void stopScanning() {
+    UrovoMessageInterface().stopScanning();
+  }
+
+  Future<bool> isTriggerEnabled() {
+    return UrovoMessageInterface().isTriggerEnabled();
+  }
+
+  void enableTrigger() {
+    UrovoMessageInterface().enableTrigger();
+  }
+
+  void disableTrigger() {
+    UrovoMessageInterface().disableTrigger();
+  }
+
+  Future<TriggerMode> getTriggerMode() async {
+    return UrovoMessageInterface().getTriggerMode();
+  }
+
+  void setTriggerMode(TriggerMode mode) {
+    UrovoMessageInterface().setTriggerMode(mode);
+  }
+
+  Future<List<SymbologyCode>> getSymbology() async {
+    final codes = await UrovoMessageInterface().getSymbology();
+    return codes;
+  }
+
+  void enabledSymbology(SymbologyCode code) {
+    UrovoMessageInterface().enableSymbology(code);
+  }
+
+  void disableSymbology(SymbologyCode code) {
+    UrovoMessageInterface().disableSymbology(code);
+  }
+
+  void resetScanner() {
+    UrovoMessageInterface().resetScanner();
+  }
 }
