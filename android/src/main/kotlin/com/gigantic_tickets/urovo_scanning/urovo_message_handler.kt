@@ -1,60 +1,67 @@
 package com.gigantic_tickets.urovo_scanning
 
+import SoundMode
 import SymbologyCode
 import TriggerMode
 import UrovoMessageInterface
-import java.util.Timer
-import kotlin.concurrent.schedule
 import android.util.Log
-import java.util.TimerTask
 
 class urovo_message_handler : UrovoMessageInterface {
-    /*override fun test(callback: (Result<String>) -> Unit) {
-        Log.i("UrovoScanningPlugin", "test method called")
 
-        val deviceName: String? = android.os.Build.MODEL
-        val deviceMan: String? = android.os.Build.MANUFACTURER
-        Log.i("UrovoScanningPlugin", "device name $deviceName device manufacture $deviceMan")
-        callback.invoke(Result.success("device name $deviceName device manufacture $deviceMan"))
-    }*/
     override fun getDeviceManufacture(callback: (Result<String>) -> Unit) {
         //val deviceName: String? = android.os.Build.MODEL
         val deviceMan: String? = android.os.Build.MANUFACTURER
         callback.invoke(Result.success(deviceMan ?: ""))
     }
 
-    //this timer task keeps track of the time the scanner has been on for
-    private var scanningTimerTask : TimerTask? = null
     override fun startScanning(delay: Long?) {
 
-        if (scanningTimerTask != null) {
-            //scanner already running and needs to be stopped
-            //before it can be restarted
-            stopScanning()
-        }
-
         val scanManager = BarcodeScanManager()
-        val decoding = scanManager.start()
-
-        if (decoding) {
-            Log.d("MESSAGE_HANDLER", "start scanning")
-            //if timer is already running then cancel it
-            scanningTimerTask = Timer().schedule(delay ?: 5000) {
-                //automatically stop the scanning after delay (which defaults to 5 seconds)
-                //of inactivity. The device will automatically turn
-                //off if it scans a barcode.
-                Log.d("MESSAGE_HANDLER", "auto cancel scanning")
-                scanManager.stop()
-                scanningTimerTask = null
-            }
-        }
+        scanManager.start()
     }
 
     override fun stopScanning() {
         val scanManager = BarcodeScanManager()
         scanManager.stop()
-        scanningTimerTask?.cancel()
-        scanningTimerTask = null
+    }
+
+    override fun getTimeOut(callback: (Result<Long>) -> Unit) {
+        val scanManager = BarcodeScanManager()
+        val timeout = scanManager.getTimeout()
+        callback.invoke(Result.success(timeout.toLong()))
+    }
+
+    override fun setTimeOut(timeout: Long) {
+        val scanManager = BarcodeScanManager()
+        scanManager.setTimeout(timeout.toInt())
+    }
+
+    override fun getSoundMode(callback: (Result<SoundMode>) -> Unit) {
+        val scanManager = BarcodeScanManager()
+        val mode = scanManager.getSoundSetting()
+        callback.invoke(Result.success(mode))
+    }
+
+    override fun setSoundMode(mode: SoundMode) {
+        val scanManager = BarcodeScanManager()
+        scanManager.setSoundMode(mode)
+    }
+
+    override fun isVibrationEnabled(callback: (Result<Boolean>) -> Unit) {
+        val scanManager = BarcodeScanManager()
+
+        val isEnabled = scanManager.isVibrationEnabled()
+        callback.invoke(Result.success(isEnabled))
+    }
+
+    override fun enableVibration() {
+        val scanManager = BarcodeScanManager()
+        scanManager.enableVibration()
+    }
+
+    override fun disableVibration() {
+        val scanManager = BarcodeScanManager()
+        scanManager.disableVibration()
     }
 
     override fun isTriggerEnabled(callback: (Result<Boolean>) -> Unit) {

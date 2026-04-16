@@ -42,6 +42,23 @@ abstract class UrovoMessageInterface {
   void stopScanning();
 
   @async
+  int getTimeOut();
+
+  void setTimeOut(int timeout);
+
+  @async
+  SoundMode getSoundMode();
+
+  void setSoundMode(SoundMode mode);
+
+  @async
+  bool isVibrationEnabled();
+
+  void enableVibration();
+
+  void disableVibration();
+
+  @async
   bool isTriggerEnabled();
 
   //this enables the physical scan buttons on the device
@@ -84,6 +101,17 @@ class BarcodeInfo {
     required this.length,
     required this.type,
   });
+}
+
+enum SoundMode {
+
+  //no sound
+  NONE,
+  //
+  SHORT,
+  //
+  SHARP,
+
 }
 
 enum TriggerMode {
