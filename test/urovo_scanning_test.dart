@@ -1,4 +1,4 @@
-import 'package:flutter_test/flutter_test.dart';
+/*import 'package:flutter_test/flutter_test.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 import 'package:urovo_scanning/urovo_scanning_platform_interface.dart';
 import 'package:urovo_scanning/urovo_scanning_method_channel.dart';
@@ -23,6 +23,6 @@ void main() {
     MockUrovoScanningPlatform fakePlatform = MockUrovoScanningPlatform();
     UrovoScanningPlatform.instance = fakePlatform;
 
-    //expect(await urovoScanningPlugin.getPlatformVersion(), '42');
+    expect(await urovoScanningPlugin.getPlatformVersion(), '42');
   });
-}
+}*/

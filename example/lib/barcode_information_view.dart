@@ -1,44 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:urovo_scanning/urovo_message_interface.g.dart';
+import 'package:urovo_scanning/Barcode.dart';
 
+///this displays some general information about a scanned barcode
 class BarcodeInformationView extends StatelessWidget {
+  ///
   const BarcodeInformationView({
-    required BarcodeInfo barcodeInfo,
+    required Barcode barcodeInfo,
     super.key}) : _barcodeInfo = barcodeInfo;
 
-  final BarcodeInfo _barcodeInfo;
+  final Barcode _barcodeInfo;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
 
         //the barcode as string
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(_barcodeInfo.barcode,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+          padding: const EdgeInsets.all(8),
+          child: Text(_barcodeInfo.barcodeAsString,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
         ),
 
         //barcode data as a list of bytes
         ListTile(
-          title: Text("Barcode in Bytes"),
-          subtitle: Text((_barcodeInfo.barcodeBytes).isNotEmpty
-              ? _barcodeInfo.barcodeBytes.toString()
-              : "unknown"),
+          title: const Text('Barcode in Bytes'),
+          subtitle: Text(_barcodeInfo.bytes.isNotEmpty
+              ? _barcodeInfo.bytes.toString()
+              : 'unknown'),
         ),
 
         //length of the byte list length
         ListTile(
-          title: Text("Barcode Length"),
+          title: const Text('Barcode Length'),
           subtitle: Text(_barcodeInfo.length.toString()),
+        ),
+
+        //type of code as string
+        ListTile(
+          title: const Text('Barcode code'),
+          subtitle: Text(_barcodeInfo.code),
         ),
 
         //type of barcode
         ListTile(
-          title: Text("Barcode type"),
+          title: const Text('Barcode type'),
           subtitle: Text(_barcodeInfo.length.toString()),
         ),
 

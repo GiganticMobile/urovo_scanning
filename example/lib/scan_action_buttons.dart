@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 
+///buttons that control the scanning functionality with the UI
 class ScanActionButtons extends StatelessWidget {
+  ///
   const ScanActionButtons({
     required VoidCallback clearResultAction,
     super.key}) : _clearResultAction = clearResultAction;
@@ -14,31 +16,23 @@ class ScanActionButtons extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         FilledButton.icon(
-          onPressed: () {
-            //the delay represents how long the scanner should stat on for.
-            //if the scanner gets a result it will automatically turn off
-            //if the delay is reached then the scanner is turned off
-            //if the delay is null then the delay defaults to 5 seconds
-            //the delay does not override the device's default time out delay
-            final int? delay = null;
-            UrovoScanning().startScanning(delay);
+          onPressed: () async {
+            await UrovoScanning().startScanning();
           },
-          label: Text("Start"),
-          icon: Icon(Icons.barcode_reader),),
+          label: const Text('Start'),
+          icon: const Icon(Icons.barcode_reader),),
 
         FilledButton.icon(
-          onPressed: () {
-            UrovoScanning().stopScanning();
+          onPressed: () async {
+            await UrovoScanning().stopScanning();
           },
-          label: Text("Stop"),
-          icon: Icon(Icons.stop),),
+          label: const Text('Stop'),
+          icon: const Icon(Icons.stop),),
 
         FilledButton.icon(
-          onPressed: () {
-            _clearResultAction.call();
-          },
-          label: Text("Clear"),
-          icon: Icon(Icons.clear),),
+          onPressed: _clearResultAction.call,
+          label: const Text('Clear'),
+          icon: const Icon(Icons.clear),),
       ],);
   }
 }

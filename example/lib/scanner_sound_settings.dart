@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:urovo_scanning/urovo_message_interface.g.dart';
+import 'package:urovo_scanning/Sound.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 
+///set the sound the scanner makes when is successfully scans a barcode
 class ScannerSoundSettings extends StatefulWidget {
+  ///
   const ScannerSoundSettings({super.key});
 
   @override
@@ -11,67 +13,75 @@ class ScannerSoundSettings extends StatefulWidget {
 
 class _ScannerSoundSettingsState extends State<ScannerSoundSettings> {
 
-  SoundMode? _sound;
+  Sound? _sound;
 
   @override
   void initState() {
     super.initState();
     UrovoScanning().getSoundMode().then((value) {
-      setState(() {
-        _sound = value;
-      });
+      if (mounted) {
+        setState(() {
+          _sound = value;
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
 
-    final noSound = _sound == SoundMode.NONE;
-    final shortSound = _sound == SoundMode.SHORT;
-    final sharpSound = _sound == SoundMode.SHARP;
+    final noSound = _sound == Sound.none;
+    final shortSound = _sound == Sound.short;
+    final sharpSound = _sound == Sound.sharp;
 
     return ExpansionTile(
-        title: Text("Scanner sound"),
-      subtitle: Text("The sound the scanner makes when it "
-          "successfully scans a barcode."),
+        title: const Text('Scanner sound'),
+      subtitle: const Text('The sound the scanner makes when it '
+          'successfully scans a barcode.'),
       children: [
         SwitchListTile(
-            title: Text("No sound"),
+            title: const Text('No sound'),
             value: noSound,
-            onChanged: (value) {
-              UrovoScanning().setSoundMode(SoundMode.NONE);
+            onChanged: (value) async {
+              await UrovoScanning().setSoundMode(Sound.none);
 
-              UrovoScanning().getSoundMode().then((value) {
+              final value = await UrovoScanning().getSoundMode();
+
+              if (mounted) {
                 setState(() {
                   _sound = value;
                 });
-              });
+              }
             }),
 
         SwitchListTile(
-            title: Text("Short sound"),
+            title: const Text('Short sound'),
             value: shortSound,
-            onChanged: (value) {
-              UrovoScanning().setSoundMode(SoundMode.SHORT);
+            onChanged: (value) async {
+              await UrovoScanning().setSoundMode(Sound.short);
 
-              UrovoScanning().getSoundMode().then((value) {
+              final value = await UrovoScanning().getSoundMode();
+
+              if (mounted) {
                 setState(() {
                   _sound = value;
                 });
-              });
+              }
             }),
 
         SwitchListTile(
-            title: Text("Sharp sound"),
+            title: const Text('Sharp sound'),
             value: sharpSound,
-            onChanged: (value) {
-              UrovoScanning().setSoundMode(SoundMode.SHARP);
+            onChanged: (value) async {
+              await UrovoScanning().setSoundMode(Sound.sharp);
 
-              UrovoScanning().getSoundMode().then((value) {
+              final value = await UrovoScanning().getSoundMode();
+
+              if (mounted) {
                 setState(() {
                   _sound = value;
                 });
-              });
+              }
             }),
       ],
     );

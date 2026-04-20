@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 
+///display if the device is compatible with the plugin
 class DeviceCompatibleView extends StatelessWidget {
+  ///
   const DeviceCompatibleView({super.key});
 
   /*
@@ -13,17 +15,17 @@ class DeviceCompatibleView extends StatelessWidget {
     return FutureBuilder(
         future: UrovoScanning().isDeviceCompatible(),
         builder: (context, value) {
-          var result = "unknown";
+          var result = 'unknown';
           if (value.data == true) {
-            result = "Device is compatible";
+            result = 'Device is compatible';
           } else if (value.data == false) {
-            result = "Not compatible";
+            result = 'Not compatible';
           } else {
-            result = "unknown";
+            result = 'unknown';
           }
 
           return ListTile(
-            title: Text("Is device compatible"),
+            title: const Text('Is device compatible'),
             subtitle: Text(result),
           );
         });

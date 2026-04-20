@@ -1,8 +1,6 @@
 package com.gigantic_tickets.urovo_scanning
 
-import SoundMode
-import SymbologyCode
-import TriggerMode
+import Code
 import android.content.IntentFilter
 import android.device.ScanManager
 import android.device.ScanManager.ACTION_DECODE
@@ -109,7 +107,7 @@ class BarcodeScanManager {
         }
     }
 
-    fun getSoundSetting() : SoundMode {
+    fun getSoundSetting() : Int? {
         openScanner()
 
         //SEND_GOOD_READ_BEEP_ENABLE means that if the barcode
@@ -122,35 +120,14 @@ class BarcodeScanManager {
         //1 : Short
         //2 : Sharp
 
-        return if (value?.firstOrNull() == 0) {
-            SoundMode.NONE
-        } else if (value?.firstOrNull() == 1) {
-            SoundMode.SHORT
-        } else if (value?.firstOrNull() == 2) {
-            SoundMode.SHARP
-        } else {
-            SoundMode.NONE
-        }
+        return value?.firstOrNull()
     }
 
-    fun setSoundMode(mode : SoundMode) : Boolean {
+    fun setSoundMode(mode : Int) : Boolean {
         openScanner()
-        val value: IntArray = when (mode) {
-            SoundMode.NONE -> {
-                intArrayOf(0)
-            }
-
-            SoundMode.SHORT -> {
-                intArrayOf(1)
-            }
-
-            SoundMode.SHARP -> {
-                intArrayOf(2)
-            }
-        }
 
         val index = intArrayOf(PropertyID.SEND_GOOD_READ_BEEP_ENABLE)
-        val result: Int = scanManager.setParameterInts(index, value)
+        val result: Int = scanManager.setParameterInts(index, intArrayOf(mode))
 
         return if (result == 0) {
             //successful
@@ -222,84 +199,93 @@ class BarcodeScanManager {
         return scanManager.lockTrigger()
     }
 
-    fun getTriggerMode() : TriggerMode {
+    fun getTriggerMode() : Int? {
         openScanner()
         val mode: Triggering? = scanManager.getTriggerMode()
 
-        return when (mode) {
-            Triggering.HOST -> {
-                TriggerMode.HOST
-            }
-            Triggering.PULSE -> {
-                TriggerMode.PULSE
-            }
-            Triggering.CONTINUOUS -> {
-                TriggerMode.CONTINUOUS
-            }
-            else -> {
-                TriggerMode.HOST
-            }
-        }
+        //0: pulse
+        //1: Continuous
+        //2: Host
+
+        return mode?.ordinal
     }
 
-    fun setTriggerMode(mode : TriggerMode) {
+    fun setTriggerMode(mode : Int) {
         openScanner()
-        val triggerMode : Triggering
-        when (mode) {
-            TriggerMode.HOST -> {
-                triggerMode = Triggering.HOST
-            }
-            TriggerMode.PULSE -> {
-                triggerMode = Triggering.PULSE
-            }
-            TriggerMode.CONTINUOUS -> {
-                triggerMode = Triggering.CONTINUOUS
-            }
-        }
+
+        val triggerMode = Triggering.values().get(mode)
+
         scanManager.setTriggerMode(triggerMode)
     }
 
-    fun getSymbology() : List<SymbologyCode> {
-        val symbologyCodes = mutableListOf<SymbologyCode>()
+    fun getAllSymbology() : List<Code> {
+        val symbologyCodes = mutableListOf<Code>()
         openScanner()
 
         val codes = Symbology.values().asList()
 
         for (code in codes) {
-            val isSupported = scanManager.isSymbologySupported(code)
-
-            if (isSupported) {
-                val isEnabled = scanManager.isSymbologyEnabled(code)
-
-                symbologyCodes.add(
-                    SymbologyCode(
-                        code.name,
-                        code.ordinal.toLong(),
-                        isEnabled)
-                )
+            val newCode = convertSymbology(code)
+            if (newCode != null) {
+                symbologyCodes.add(newCode)
             }
         }
 
         return  symbologyCodes.toList()
     }
 
-    fun enableSymbology(code : SymbologyCode) {
-        val symbology = getValidSymbology(code)
+    private fun convertSymbology(symbol : Symbology) : Code? {
+
+        if (symbol == null) {
+            return null
+        }
+
+        val isSupported = scanManager.isSymbologySupported(symbol)
+        val isEnabled = scanManager.isSymbologyEnabled(symbol)
+
+        val id = symbol.ordinal.toLong()
+        val type = symbol.name
+        return  Code(id, type, isSupported, isEnabled)
+    }
+
+    fun getSymbology(id : Int) : Code? {
+        openScanner()
+        val symbol =
+            Symbology.values().firstOrNull { code -> code.ordinal == id }
+
+        if (symbol == null) {
+            return null
+        }
+        return convertSymbology(symbol)
+    }
+
+    fun enableSymbology(id : Int) {
+        val symbology = getValidSymbology(id)
         if (symbology != null) {
             scanManager.enableSymbology(symbology, true)
         }
     }
 
-    fun disableSymbology(code : SymbologyCode) {
-        val symbology = getValidSymbology(code)
+    fun enableAllSymbology() {
+        openScanner()
+        scanManager.enableAllSymbologies(true)
+    }
+
+    fun disableSymbology(id : Int) {
+        val symbology = getValidSymbology(id)
         if (symbology != null) {
             scanManager.enableSymbology(symbology, false)
         }
     }
 
-    private fun getValidSymbology(code: SymbologyCode) : Symbology? {
+    fun disableAllSymbology() {
         openScanner()
-        val found = Symbology.values().elementAtOrNull(code.index.toInt())
+        scanManager.enableAllSymbologies(false)
+    }
+
+    private fun getValidSymbology(id: Int) : Symbology? {
+        openScanner()
+        val found = Symbology.values().firstOrNull { code -> code.ordinal == id }
 
         return if (found == null) {
             null

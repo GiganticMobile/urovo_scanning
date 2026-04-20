@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:urovo_scanning/urovo_message_interface.g.dart';
+import 'package:urovo_scanning/Barcode.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 import 'package:urovo_scanning_example/barcode_information_view.dart';
+import 'package:urovo_scanning_example/barcode_types_settings.dart';
 import 'package:urovo_scanning_example/device_compatible_view.dart';
 import 'package:urovo_scanning_example/reset_scanner_settings.dart';
 import 'package:urovo_scanning_example/scan_action_buttons.dart';
@@ -14,24 +15,26 @@ import 'package:urovo_scanning_example/scanner_sound_settings.dart';
 import 'package:urovo_scanning_example/scanner_timeout_settings.dart';
 import 'package:urovo_scanning_example/scanner_vibrate_setting.dart';
 
-import 'barcode_types_settings.dart';
-
 void main() {
   runApp(const ExampleApp());
 }
 
+///
 class ExampleApp extends StatelessWidget {
+  ///
   const ExampleApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: ScanScreen(),
     );
   }
 }
 
+///
 class ScanScreen extends StatefulWidget {
+  ///
   const ScanScreen({super.key});
 
   @override
@@ -41,13 +44,14 @@ class ScanScreen extends StatefulWidget {
 class _ScanScreenState extends State<ScanScreen> {
 
   //initial barcode information
-  var _barcodeInformation = BarcodeInfo(
-      barcodeBytes: Uint8List.fromList([]),
-      barcode: '',
+  var _barcodeInformation = Barcode(
+      bytes: Uint8List.fromList([]),
+      barcodeAsString: '',
       length: 0,
+      code: '',
       type: 0);
 
-  late final StreamSubscription<BarcodeInfo>
+  late final StreamSubscription<Barcode>
   _barcodeInformationStreamSubscription;
 
   @override
@@ -75,27 +79,28 @@ class _ScanScreenState extends State<ScanScreen> {
             title: const Text('Urovo scanning app'),
             actions: [
               IconButton(onPressed: () {
-                showModalBottomSheet(context: context, builder: (context) {
+                showModalBottomSheet<void>(context: context, builder: (context) {
                   return ListView(children: [
                     ListTile(
-                      title: Text("Settings"),
-                      trailing: Icon(Icons.close),
+                      title: const Text('Settings'),
+                      trailing: const Icon(Icons.close),
                       onTap: () {
                         Navigator.of(context).pop();
                       },
                     ),
-                    DeviceCompatibleView(),
-                    ScannerTimeoutSettings(),
-                    ScannerSoundSettings(),
-                    ScannerVibrateSetting(),
-                    ScanModeSettingsWidget(),
-                    ScanButtonsSettingsWidget(),
-                    BarcodeTypesSettings(),
-                    ResetScannerSettings(),
+                    const DeviceCompatibleView(),
+                    const ScannerTimeoutSettings(),
+                    const ScannerSoundSettings(),
+                    const ScannerVibrateSetting(),
+                    const ScanModeSettingsWidget(),
+                    const ScanButtonsSettingsWidget(),
+                    const UniversalBarcodeTypeSettings(),
+                    const BarcodeTypesSettings(),
+                    const ResetScannerSettings(),
                   ],);
                 });
 
-              }, icon: Icon(Icons.settings))
+              }, icon: const Icon(Icons.settings))
             ],),
           body: Column(children: [
             Expanded(child: Center(child: BarcodeInformationView(
@@ -104,10 +109,11 @@ class _ScanScreenState extends State<ScanScreen> {
             ScanActionButtons(clearResultAction: () {
               setState(() {
                 //clearing barcode information
-                _barcodeInformation = BarcodeInfo(
-                    barcodeBytes: Uint8List.fromList([]),
-                    barcode: '',
+                _barcodeInformation = Barcode(
+                    bytes: Uint8List.fromList([]),
+                    barcodeAsString: '',
                     length: 0,
+                    code: '',
                     type: 0);
               });
             })

@@ -1,4 +1,4 @@
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+/*import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'urovo_scanning_method_channel.dart';
 
@@ -26,4 +26,4 @@ abstract class UrovoScanningPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
-}
+}*/

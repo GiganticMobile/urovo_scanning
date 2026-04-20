@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 
+///enable or disable the physical scan action buttons on the device
 class ScanButtonsSettingsWidget extends StatefulWidget {
+  ///
   const ScanButtonsSettingsWidget({super.key});
 
   @override
@@ -16,9 +18,11 @@ class _ScanButtonsSettingsWidgetState extends State<ScanButtonsSettingsWidget> {
   void initState() {
     super.initState();
     UrovoScanning().isTriggerEnabled().then((value) {
-      setState(() {
-        _scanButtonsEnabled = value;
-      });
+      if (mounted) {
+        setState(() {
+          _scanButtonsEnabled = value;
+        });
+      }
     });
   }
 
@@ -30,32 +34,30 @@ class _ScanButtonsSettingsWidgetState extends State<ScanButtonsSettingsWidget> {
     So if disabled the device will not scan.
      */
 
-    var isEnableText = "unknown";
+    var isEnableText = 'unknown';
     if (_scanButtonsEnabled == true) {
-      isEnableText = "Enabled";
+      isEnableText = 'Enabled';
     } else if (_scanButtonsEnabled == false) {
-      isEnableText = "Disabled";
+      isEnableText = 'Disabled';
     } else {
-      isEnableText = "unknown";
+      isEnableText = 'unknown';
     }
 
     return SwitchListTile(
-        title: Text("Are the scan buttons enabled?"),
+        title: const Text('Are the scan buttons enabled?'),
         subtitle: Text(isEnableText),
         value: _scanButtonsEnabled ?? false,
-        onChanged: _scanButtonsEnabled != null ? (value) {
+        onChanged: _scanButtonsEnabled != null ? (value) async {
 
-          if (value) {
-            UrovoScanning().enableTrigger();
-          } else {
-            UrovoScanning().disableTrigger();
-          }
+          await UrovoScanning().enableTrigger(enable: value);
 
-          UrovoScanning().isTriggerEnabled().then((value) {
+          final scanButtonEnabled = await UrovoScanning().isTriggerEnabled();
+
+          if (mounted) {
             setState(() {
-              _scanButtonsEnabled = value;
+              _scanButtonsEnabled = scanButtonEnabled;
             });
-          });
+          }
         } : null);
   }
 }

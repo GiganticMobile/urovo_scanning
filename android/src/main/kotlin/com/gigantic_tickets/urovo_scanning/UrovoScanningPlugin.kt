@@ -1,6 +1,6 @@
 package com.gigantic_tickets.urovo_scanning
 
-import BarcodeInfo
+import Barcode
 import OnBarcodeChangedStreamHandler
 import UrovoMessageInterface
 import android.content.Context
@@ -31,7 +31,7 @@ class UrovoScanningPlugin : FlutterPlugin {
         receiver = BarcodeReceiver()
 
         receiver?.setListener(object : BarcodeReceiverListener() {
-            override fun onBarcodeChanged(info : BarcodeInfo) {
+            override fun onBarcodeChanged(info : Barcode) {
                 eventListener.onBarcodeChanged(info)
             }
         })

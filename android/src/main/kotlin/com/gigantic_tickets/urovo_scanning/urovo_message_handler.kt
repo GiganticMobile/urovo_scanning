@@ -1,10 +1,8 @@
 package com.gigantic_tickets.urovo_scanning
 
-import SoundMode
-import SymbologyCode
-import TriggerMode
+import Code
 import UrovoMessageInterface
-import android.util.Log
+//import android.util.Log
 
 class urovo_message_handler : UrovoMessageInterface {
 
@@ -14,8 +12,7 @@ class urovo_message_handler : UrovoMessageInterface {
         callback.invoke(Result.success(deviceMan ?: ""))
     }
 
-    override fun startScanning(delay: Long?) {
-
+    override fun startScanning() {
         val scanManager = BarcodeScanManager()
         scanManager.start()
     }
@@ -36,15 +33,15 @@ class urovo_message_handler : UrovoMessageInterface {
         scanManager.setTimeout(timeout.toInt())
     }
 
-    override fun getSoundMode(callback: (Result<SoundMode>) -> Unit) {
+    override fun getSoundMode(callback: (Result<Long?>) -> Unit) {
         val scanManager = BarcodeScanManager()
-        val mode = scanManager.getSoundSetting()
-        callback.invoke(Result.success(mode))
+        val sound = scanManager.getSoundSetting()?.toLong()
+        callback.invoke(Result.success(sound))
     }
 
-    override fun setSoundMode(mode: SoundMode) {
+    override fun setSoundMode(mode: Long) {
         val scanManager = BarcodeScanManager()
-        scanManager.setSoundMode(mode)
+        scanManager.setSoundMode(mode.toInt())
     }
 
     override fun isVibrationEnabled(callback: (Result<Boolean>) -> Unit) {
@@ -68,7 +65,7 @@ class urovo_message_handler : UrovoMessageInterface {
         val scanManager = BarcodeScanManager()
         //enabled is unlocked (isTriggerLocked false
         val isTriggerLocked = !scanManager.isTriggerLocked()
-        Log.d("MESSAGE_HANDLER", "is trigger locked $isTriggerLocked")
+        //Log.d("MESSAGE_HANDLER", "is trigger locked $isTriggerLocked")
         callback.invoke(Result.success(isTriggerLocked))
     }
 
@@ -82,35 +79,52 @@ class urovo_message_handler : UrovoMessageInterface {
         scanManager.disableTrigger()
     }
 
+    override fun getScanMode(callback: (Result<Long?>) -> Unit) {
+        val scanManager = BarcodeScanManager()
+        val scanMode = scanManager.getTriggerMode()
+        callback.invoke(Result.success(scanMode?.toLong()))
+    }
+
+    override fun setScanMode(mode: Long) {
+        val scanManager = BarcodeScanManager()
+        scanManager.setTriggerMode(mode.toInt())
+    }
+
+    override fun getCodes(callback: (Result<List<Code>>) -> Unit) {
+        val scanManager = BarcodeScanManager()
+        val codes = scanManager.getAllSymbology()
+        callback.invoke(Result.success(codes))
+    }
+
+    override fun getCode(codeId: Long, callback: (Result<Code?>) -> Unit) {
+        val scanManager = BarcodeScanManager()
+        val code = scanManager.getSymbology(codeId.toInt())
+        callback.invoke(Result.success(code))
+    }
+
+    override fun enableCode(codeId: Long) {
+        val scanManager = BarcodeScanManager()
+        scanManager.enableSymbology(codeId.toInt())
+    }
+
+    override fun enableAllCodes() {
+        val scanManager = BarcodeScanManager()
+        scanManager.enableAllSymbology()
+    }
+
+    override fun disableCode(codeId: Long) {
+        val scanManager = BarcodeScanManager()
+        scanManager.disableSymbology(codeId.toInt())
+    }
+
+    override fun disableAllCodes() {
+        val scanManager = BarcodeScanManager()
+        scanManager.disableAllSymbology()
+    }
+
     override fun resetScanner() {
         val scanManager = BarcodeScanManager()
         scanManager.reset()
-    }
-
-    override fun getTriggerMode(callback: (Result<TriggerMode>) -> Unit) {
-        val scanManager = BarcodeScanManager()
-        val mode = scanManager.getTriggerMode()
-        callback.invoke(Result.success(mode))
-    }
-
-    override fun setTriggerMode(mode: TriggerMode) {
-        val scanManager = BarcodeScanManager()
-        scanManager.setTriggerMode(mode)
-    }
-
-    override fun getSymbology(callback: (Result<List<SymbologyCode>>) -> Unit) {
-        val scanManager = BarcodeScanManager()
-        callback.invoke(Result.success(scanManager.getSymbology()))
-    }
-
-    override fun enableSymbology(code: SymbologyCode) {
-        val scanManager = BarcodeScanManager()
-        scanManager.enableSymbology(code)
-    }
-
-    override fun disableSymbology(code: SymbologyCode) {
-        val scanManager = BarcodeScanManager()
-        scanManager.disableSymbology(code)
     }
 
 }

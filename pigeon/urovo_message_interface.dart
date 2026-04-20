@@ -3,7 +3,7 @@ import 'package:pigeon/pigeon.dart';
 @ConfigurePigeon(
   PigeonOptions(
     input: 'pigeon/urovo_message_interface.dart',
-    dartOut: 'lib/urovo_message_interface.g.dart',
+    dartOut: 'lib/src/urovo_message_interface.g.dart',
     dartOptions: DartOptions(),
     //cppOptions: CppOptions(namespace: 'pigeon_example'),
     //cppHeaderOut: 'windows/runner/messages.g.h',
@@ -20,7 +20,8 @@ import 'package:pigeon/pigeon.dart';
     //swiftOptions: SwiftOptions(),
     //objcHeaderOut: 'macos/Runner/messages.g.h',
     //objcSourceOut: 'macos/Runner/messages.g.m',
-    // Set this to a unique prefix for your plugin or application, per Objective-C naming conventions.
+    // Set this to a unique prefix for your plugin or application,
+    // per Objective-C naming conventions.
     //objcOptions: ObjcOptions(prefix: 'PGN'),
     //copyrightHeader: 'pigeons/copyright.txt',
     dartPackageName: 'urovo_scanning_package',
@@ -36,7 +37,7 @@ abstract class UrovoMessageInterface {
   //this allows the plugin to start a scan whenever the user
   //wants.
   //optional delay which if null defaults to 5 seconds
-  void startScanning(int? delay);
+  void startScanning();
 
   //this stops an already in progress scan
   void stopScanning();
@@ -47,9 +48,9 @@ abstract class UrovoMessageInterface {
   void setTimeOut(int timeout);
 
   @async
-  SoundMode getSoundMode();
+  int? getSoundMode();
 
-  void setSoundMode(SoundMode mode);
+  void setSoundMode(int mode);
 
   @async
   bool isVibrationEnabled();
@@ -68,79 +69,80 @@ abstract class UrovoMessageInterface {
   void disableTrigger();
 
   @async
-  TriggerMode getTriggerMode();
+  int? getScanMode();
 
-  void setTriggerMode(TriggerMode mode);
+  void setScanMode(int mode);
 
   @async
-  List<SymbologyCode> getSymbology();
+  List<Code> getCodes();
 
-  void enableSymbology(SymbologyCode code);
+  @async
+  Code? getCode(int codeId);
 
-  void disableSymbology(SymbologyCode code);
+  void enableCode(int codeId);
+
+  void enableAllCodes();
+
+  void disableCode(int codeId);
+
+  void disableAllCodes();
 
   void resetScanner();
 }
 
+///
 @EventChannelApi()
 abstract class UrovoBarcodeInterface {
 
-  BarcodeInfo onBarcodeChanged();
+  Barcode onBarcodeChanged();
 
 }
 
-class BarcodeInfo {
-  final Uint8List barcodeBytes;
-  final String barcode;
-  final int length;
-  final int type;
+///Barcode information returned by a scan
+class Barcode {
 
-  BarcodeInfo({
-    required this.barcodeBytes,
-    required this.barcode,
+  ///
+  Barcode({
+    required this.bytes,
+    required this.barcodeAsString,
     required this.length,
+    required this.code,
     required this.type,
   });
-}
 
-enum SoundMode {
-
-  //no sound
-  NONE,
-  //
-  SHORT,
-  //
-  SHARP,
+  final Uint8List? bytes;
+  final String? barcodeAsString;
+  final int? length;
+  final String? code;
+  final int? type;
 
 }
 
-enum TriggerMode {
-  //The scanner is only in operation as long as the physical scanning button is pressed
-  HOST,
+///this represent a type of barcode (this is only used for communicating
+///with the native code i.e. kotlin)
+class Code {
 
-  //The scanner is only in operation for a short period of time after the physical
-  // scanning button is pressed
-  PULSE,
-
-  //The scanner is in operation as soon as the physical scanning button is
-  // pressed as it only turned off when these buttons are pressed again
-  CONTINUOUS
-}
-
-//Symbology is the kinds of codes the laser scanner is able to read
-class SymbologyCode {
-  //used as identification
-  String title;
-  //the id of the code the scanner understands
-  int index;
-  //if this code has been enabled
-  bool enabled;
-
-  SymbologyCode({
-    required this.title,
-    required this.index,
-    required this.enabled,
+  ///
+  Code({
+    required this.id,
+    required this.type,
+    required this.supported,
+    required this.enabled
   });
+
+  ///the format id
+  final int id;
+
+  ///the format type of the barcode
+  final String type;
+
+  ///is the barcode supported by the scanner
+  final bool supported;
+
+  ///is the type enabled
+  final bool enabled;
+
+
 }
 
 //run pigeon command

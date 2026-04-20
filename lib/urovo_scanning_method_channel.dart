@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+/*import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'urovo_scanning_platform_interface.dart';
@@ -16,4 +16,4 @@ class MethodChannelUrovoScanning extends UrovoScanningPlatform {
     );
     return version;
   }
-}
+}*/

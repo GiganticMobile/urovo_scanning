@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 
+///set if the scanner should vibrate if it successfully scans a barcode
 class ScannerVibrateSetting extends StatefulWidget {
+  ///
   const ScannerVibrateSetting({super.key});
 
   @override
@@ -16,31 +18,31 @@ class _ScannerVibrateSettingState extends State<ScannerVibrateSetting> {
   void initState() {
     super.initState();
     UrovoScanning().isVibrationEnabled().then((value) {
-      setState(() {
-        _isVibrationEnabled = value;
-      });
+      if (mounted) {
+        setState(() {
+          _isVibrationEnabled = value;
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return SwitchListTile(
-        title: Text('Scanner vibration'),
-        subtitle: Text("Should the scanner vibrates if it "
-            "successfully scans a barcode."),
+        title: const Text('Scanner vibration'),
+        subtitle: const Text('Should the scanner vibrates if it '
+            'successfully scans a barcode.'),
         value: _isVibrationEnabled ?? false,
-        onChanged: _isVibrationEnabled != null ? (value) {
-          if (value) {
-            UrovoScanning().enableVibration();
-          } else {
-            UrovoScanning().disableVibration();
-          }
+        onChanged: _isVibrationEnabled != null ? (value) async {
+          await UrovoScanning().enableVibration(enable: value);
 
-          UrovoScanning().isVibrationEnabled().then((value) {
+          final isVibrateEnabled = await UrovoScanning().isVibrationEnabled();
+
+          if (mounted) {
             setState(() {
-              _isVibrationEnabled = value;
+              _isVibrationEnabled = isVibrateEnabled;
             });
-          });
+          }
         } : null);
   }
 }
