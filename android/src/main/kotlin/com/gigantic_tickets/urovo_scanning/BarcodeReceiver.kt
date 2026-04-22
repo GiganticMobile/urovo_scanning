@@ -9,7 +9,6 @@ import android.device.ScanManager.BARCODE_LENGTH_TAG
 import android.device.ScanManager.BARCODE_STRING_TAG
 import android.device.ScanManager.BARCODE_TYPE_TAG
 import android.device.ScanManager.DECODE_DATA_TAG
-//import android.util.Log
 
 class BarcodeReceiver : BroadcastReceiver() {
 
@@ -58,12 +57,10 @@ class BarcodeReceiver : BroadcastReceiver() {
 
     companion object {
         fun register(context: Context, receiver: BarcodeReceiver, filter: IntentFilter) {
-            //Log.d("BARCODE_RECEIVER", "on unregister receiver")
             context.registerReceiver(receiver, filter)
         }
 
         fun unregister(context: Context, receiver: BarcodeReceiver) {
-            //Log.d("BARCODE_RECEIVER", "on unregister receiver")
             context.unregisterReceiver(receiver)
         }
     }

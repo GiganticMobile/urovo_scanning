@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-///
+///All the information related to a scanned barcode
 class Barcode {
 
   ///

@@ -36,7 +36,6 @@ abstract class UrovoMessageInterface {
 
   //this allows the plugin to start a scan whenever the user
   //wants.
-  //optional delay which if null defaults to 5 seconds
   void startScanning();
 
   //this stops an already in progress scan

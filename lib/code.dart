@@ -1,5 +1,5 @@
 
-///this represents a barcode
+///this represents a barcode type (such as a QR code)
 class Code {
 
   ///

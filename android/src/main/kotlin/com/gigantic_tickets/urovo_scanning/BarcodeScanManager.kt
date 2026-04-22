@@ -16,22 +16,35 @@ class BarcodeScanManager {
     private fun openScanner() {
         val powerOn = scanManager.scannerState
         if (!powerOn) {
-            scanManager.openScanner()
+            val successfullyOpened = scanManager.openScanner()
+            if (!successfullyOpened) {
+                throw Exception("unable to open scanner")
+            }
         }
     }
 
     private fun closeScanner() {
         val powerOn = scanManager.scannerState
         if (powerOn) {
-            scanManager.closeScanner()
+            val successfullyClosed = scanManager.closeScanner()
+            if (!successfullyClosed) {
+                throw Exception("unable to close scanner")
+            }
         }
     }
 
     //start listening to barcode scanning events
     fun startListening() {
         openScanner()
-        //set result of scans to be sent to an intent
-        scanManager.switchOutputMode(0)
+        /*
+        mode - 0 if barcode output is to be sent as intent,
+        1 if barcode output is to be sent to the text box in focus.
+        The default output mode is TextBox Mode.
+         */
+        val successfullySwitch = scanManager.switchOutputMode(0)
+        if (!successfullySwitch) {
+            throw Exception("could not switch out put mode")
+        }
     }
 
     fun stopListening() {
@@ -55,31 +68,35 @@ class BarcodeScanManager {
         return filter
     }
 
-    fun start() : Boolean {
+    fun start() {
         openScanner()
-        val decoding: Boolean = scanManager.startDecode()
+        val started: Boolean = scanManager.startDecode()
 
-        //if decoding is true then the device has successfully turned
+        //if stated is true then the device has successfully turned
         //on the scanner. If not the scanner failed
-        return decoding
+        if (!started) {
+            throw Exception("unable to start scanner")
+        }
     }
 
-    fun stop() : Boolean {
+    fun stop() {
         openScanner()
-        val result = scanManager.stopDecode()
-        closeScanner()
-        //did the plugin successfully stop decoding
-        return result
+        val stopped = scanManager.stopDecode()
+        //closeScanner() may effect any streams if the scanner is suddenly closed
+        if (!stopped) {
+            throw Exception("unable to stop scanner")
+        }
     }
 
-    fun reset() : Boolean {
+    fun reset() {
         openScanner()
-        val result = scanManager.resetScannerParameters()
+        val reset = scanManager.resetScannerParameters()
         //reset the scanner to send results in an intent
         scanManager.switchOutputMode(0)
-        closeScanner()
-        //did the plugin successfully reset the scanner
-        return result
+        //closeScanner()
+        if (!reset) {
+            throw Exception("unable to reset scanner")
+        }
     }
 
     fun getTimeout() : Int {
@@ -92,18 +109,16 @@ class BarcodeScanManager {
         return time
     }
 
-    fun setTimeout(timeout : Int) : Boolean {
+    fun setTimeout(timeout : Int) {
         openScanner()
 
         val index = intArrayOf(PropertyID.LASER_ON_TIME)
-        val result: Int = scanManager.setParameterInts(index, intArrayOf(timeout))
+        val setTimeOutSuccessful: Int = scanManager.setParameterInts(index, intArrayOf(timeout))
 
-        return if (result == 0) {
-            //successful
-            true
+        if (setTimeOutSuccessful == 0) {
+            //success
         } else {
-            //error occurred
-            false
+            throw Exception("unable to set time out")
         }
     }
 
@@ -123,18 +138,16 @@ class BarcodeScanManager {
         return value?.firstOrNull()
     }
 
-    fun setSoundMode(mode : Int) : Boolean {
+    fun setSoundMode(mode : Int) {
         openScanner()
 
         val index = intArrayOf(PropertyID.SEND_GOOD_READ_BEEP_ENABLE)
-        val result: Int = scanManager.setParameterInts(index, intArrayOf(mode))
+        val setSoundSuccessful: Int = scanManager.setParameterInts(index, intArrayOf(mode))
 
-        return if (result == 0) {
-            //successful
-            true
+        if (setSoundSuccessful == 0) {
+            //success
         } else {
-            //error occurred
-            false
+            throw Exception("unable to set sound")
         }
     }
 
@@ -153,33 +166,31 @@ class BarcodeScanManager {
         return value?.firstOrNull() == 1
     }
 
-    fun enableVibration() : Boolean {
+    fun enableVibration() {
         openScanner()
 
         val index = intArrayOf(PropertyID.SEND_GOOD_READ_VIBRATE_ENABLE)
-        val result: Int = scanManager.setParameterInts(index, intArrayOf(1))
+        val setEnableVibrationSuccessful: Int =
+            scanManager.setParameterInts(index, intArrayOf(1))
 
-        return if (result == 0) {
+        if (setEnableVibrationSuccessful == 0) {
             //successful
-            true
         } else {
-            //error occurred
-            false
+            throw Exception("unable to enable vibration")
         }
     }
 
-    fun disableVibration() : Boolean {
+    fun disableVibration() {
         openScanner()
 
         val index = intArrayOf(PropertyID.SEND_GOOD_READ_VIBRATE_ENABLE)
-        val result: Int = scanManager.setParameterInts(index, intArrayOf(0))
+        val setDisableVibrationSuccessful: Int =
+            scanManager.setParameterInts(index, intArrayOf(0))
 
-        return if (result == 0) {
+        if (setDisableVibrationSuccessful == 0) {
             //successful
-            true
         } else {
-            //error occurred
-            false
+            throw Exception("unable to disable vibration")
         }
     }
 
@@ -189,14 +200,20 @@ class BarcodeScanManager {
         return scanManager.getTriggerLockState()
     }
 
-    fun enableTrigger() : Boolean {
+    fun enableTrigger() {
         openScanner()
-        return scanManager.unlockTrigger()
+        val enableTriggerSuccessful = scanManager.unlockTrigger()
+        if (!enableTriggerSuccessful) {
+            throw Exception("unable to enable trigger")
+        }
     }
 
-    fun disableTrigger() : Boolean {
+    fun disableTrigger() {
         openScanner()
-        return scanManager.lockTrigger()
+        val disableTriggerSuccessful = scanManager.lockTrigger()
+        if (!disableTriggerSuccessful) {
+            throw Exception("unable to disable trigger")
+        }
     }
 
     fun getTriggerMode() : Int? {
@@ -234,7 +251,7 @@ class BarcodeScanManager {
         return  symbologyCodes.toList()
     }
 
-    private fun convertSymbology(symbol : Symbology) : Code? {
+    private fun convertSymbology(symbol : Symbology?) : Code? {
 
         if (symbol == null) {
             return null
