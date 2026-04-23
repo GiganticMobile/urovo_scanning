@@ -154,14 +154,11 @@ class ScannerHandler {
   Future<ScanMode> getScanMode() async {
     final id = await _messageHandler.getScanMode();
 
-    if (id == 0) {
-      return ScanMode.pulse;
-    } else if (id == 1) {
-      return ScanMode.continuous;
-    } else if (id == 2) {
-      return ScanMode.host;
-    } else {
-      return ScanMode.host;
+    switch(id) {
+      case 0: return ScanMode.pulse;
+      case 1: return ScanMode.continuous;
+      case 2: return ScanMode.host;
+      default: throw Exception('unknown scan mode');
     }
   }
 
