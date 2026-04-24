@@ -1,3 +1,5 @@
+# Changelog
+
 ## 0.0.1
 
-* TODO: Describe initial release.
+- initial implementation of the plugin with some common functionality.
