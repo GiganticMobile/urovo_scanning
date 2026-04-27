@@ -73,17 +73,6 @@ void main() {
     
   });
 
-  /*group("barcode stream tests", () {
-
-    test("barcode string stream test", () {
-
-      final messageHandler = MockUrovoMessageInterface();
-      when(messageHandler)
-
-    });
-
-  });*/
-
   group('barcode string stream tests', () {
     //there it no logic in the barcode string stream function as the logic is
     //handled by the native side
