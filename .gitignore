@@ -31,5 +31,4 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 /build/
 /coverage/
-/lib/src/urovo_message_interface.g.dart
 /test/scanner_handler_tests.mocks.dart
