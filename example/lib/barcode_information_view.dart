@@ -12,43 +12,44 @@ class BarcodeInformationView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+    return CustomScrollView(
+        slivers: [
+          //the barcode as string
+          SliverAppBar(
+            title: Text(_barcodeInfo.barcodeAsString,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            ),
+              automaticallyImplyLeading: false,
+          ),
 
-        //the barcode as string
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Text(_barcodeInfo.barcodeAsString,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
-        ),
+          SliverList.list(children: [
+            //barcode data as a list of bytes
+            ListTile(
+              title: const Text('Barcode in Bytes'),
+              subtitle: Text(_barcodeInfo.bytes.isNotEmpty
+                  ? _barcodeInfo.bytes.toString()
+                  : 'unknown'),
+            ),
 
-        //barcode data as a list of bytes
-        ListTile(
-          title: const Text('Barcode in Bytes'),
-          subtitle: Text(_barcodeInfo.bytes.isNotEmpty
-              ? _barcodeInfo.bytes.toString()
-              : 'unknown'),
-        ),
+            //length of the byte list length
+            ListTile(
+              title: const Text('Barcode Length'),
+              subtitle: Text(_barcodeInfo.length.toString()),
+            ),
 
-        //length of the byte list length
-        ListTile(
-          title: const Text('Barcode Length'),
-          subtitle: Text(_barcodeInfo.length.toString()),
-        ),
+            //type of code as string
+            ListTile(
+              title: const Text('Barcode code'),
+              subtitle: Text(_barcodeInfo.code),
+            ),
 
-        //type of code as string
-        ListTile(
-          title: const Text('Barcode code'),
-          subtitle: Text(_barcodeInfo.code),
-        ),
-
-        //type of barcode
-        ListTile(
-          title: const Text('Barcode type'),
-          subtitle: Text(_barcodeInfo.length.toString()),
-        ),
-
-    ],);
+            //type of barcode
+            ListTile(
+              title: const Text('Barcode type'),
+              subtitle: Text(_barcodeInfo.length.toString()),
+            ),
+          ])
+        ]
+    );
   }
 }
