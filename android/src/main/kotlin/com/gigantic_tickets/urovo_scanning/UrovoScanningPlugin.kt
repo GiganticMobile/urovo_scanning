@@ -38,7 +38,11 @@ class UrovoScanningPlugin : FlutterPlugin {
 
         try {
             val filter = scanManager.getIntentFilter()
-            BarcodeReceiver.register(context!!, receiver!!, filter)
+            val ctx = context
+            val rec = receiver
+            if (ctx != null && rec != null) {
+                BarcodeReceiver.register(ctx, rec, filter)
+            }
         } catch (_: Exception) {
 
         }
@@ -46,7 +50,11 @@ class UrovoScanningPlugin : FlutterPlugin {
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        BarcodeReceiver.unregister(context!!, receiver!!)
+        val ctx = context
+        val rec = receiver
+        if (ctx != null && rec != null) {
+            BarcodeReceiver.unregister(ctx, rec)
+        }
         scanManager.stopListening()
         context = null
     }
