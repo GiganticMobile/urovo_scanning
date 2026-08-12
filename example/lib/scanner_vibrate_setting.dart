@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 
@@ -17,13 +19,17 @@ class _ScannerVibrateSettingState extends State<ScannerVibrateSetting> {
   @override
   void initState() {
     super.initState();
-    UrovoScanning().isVibrationEnabled().then((value) {
-      if (mounted) {
-        setState(() {
-          _isVibrationEnabled = value;
-        });
-      }
-    });
+    unawaited(
+        UrovoScanning().isVibrationEnabled().then((value) {
+          if (mounted) {
+            setState(() {
+              _isVibrationEnabled = value;
+            });
+          }
+        }, onError: (error) {
+          //catch error but do nothing
+        })
+    );
   }
 
   @override

@@ -68,6 +68,22 @@ class BarcodeScanManager {
         return filter
     }
 
+    fun hasScanner() : Boolean {
+        try {
+            openScanner()
+            closeScanner()
+
+            //scanner opened and closed without error
+            //so device should have scanner
+            return true
+        }  catch (_: Exception) {
+            //opening or closing the scanner failed
+            //this is most likely because the device
+            //does not have a scanner
+            return false
+        }
+    }
+
     fun start() {
         openScanner()
         val started: Boolean = scanManager.startDecode()

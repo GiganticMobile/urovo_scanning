@@ -335,6 +335,7 @@ val urovo_message_interfacePigeonMethodCodec = StandardMethodCodec(urovo_message
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface UrovoMessageInterface {
+  fun hasDeviceScanner(callback: (Result<Boolean>) -> Unit)
   fun getDeviceManufacture(callback: (Result<String>) -> Unit)
   fun startScanning()
   fun stopScanning()
@@ -367,6 +368,24 @@ interface UrovoMessageInterface {
     @JvmOverloads
     fun setUp(binaryMessenger: BinaryMessenger, api: UrovoMessageInterface?, messageChannelSuffix: String = "") {
       val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.hasDeviceScanner$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.hasDeviceScanner{ result: Result<Boolean> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(UrovoMessageInterfacePigeonUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(UrovoMessageInterfacePigeonUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
       run {
         val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getDeviceManufacture$separatedMessageChannelSuffix", codec)
         if (api != null) {

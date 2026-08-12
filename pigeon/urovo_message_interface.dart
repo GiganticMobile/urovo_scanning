@@ -1,5 +1,6 @@
 import 'package:pigeon/pigeon.dart';
 
+//run pigeon flutter pub run pigeon — input pigeon/urovo_message_interface.dart
 @ConfigurePigeon(
   PigeonOptions(
     input: 'pigeon/urovo_message_interface.dart',
@@ -30,6 +31,9 @@ import 'package:pigeon/pigeon.dart';
 
 @HostApi()
 abstract class UrovoMessageInterface {
+
+  @async
+  bool hasDeviceScanner();
 
   @async
   String getDeviceManufacture();

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:urovo_scanning/scan_mode.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
@@ -19,13 +21,17 @@ class _ScanModeSettingsWidgetState extends State<ScanModeSettingsWidget> {
   @override
   void initState() {
     super.initState();
-    UrovoScanning().getScanMode().then((value) {
-      if (mounted) {
-        setState(() {
-          _mode = value;
-        });
-      }
-    });
+    unawaited(
+        UrovoScanning().getScanMode().then((value) {
+          if (mounted) {
+            setState(() {
+              _mode = value;
+            });
+          }
+        }, onError: (error) {
+          //catch error but do nothing
+        })
+    );
   }
 
   @override

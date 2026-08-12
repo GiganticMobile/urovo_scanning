@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:urovo_scanning/Sound.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
@@ -18,13 +20,17 @@ class _ScannerSoundSettingsState extends State<ScannerSoundSettings> {
   @override
   void initState() {
     super.initState();
-    UrovoScanning().getSoundMode().then((value) {
-      if (mounted) {
-        setState(() {
-          _sound = value;
-        });
-      }
-    });
+    unawaited(
+        UrovoScanning().getSoundMode().then((value) {
+          if (mounted) {
+            setState(() {
+              _sound = value;
+            });
+          }
+        }, onError: (error) {
+          //catch error but do nothing
+        })
+    );
   }
 
   @override
@@ -43,14 +49,18 @@ class _ScannerSoundSettingsState extends State<ScannerSoundSettings> {
             title: const Text('No sound'),
             value: noSound,
             onChanged: (value) async {
-              await UrovoScanning().setSoundMode(Sound.none);
+              try {
+                await UrovoScanning().setSoundMode(Sound.none);
 
-              final value = await UrovoScanning().getSoundMode();
+                final value = await UrovoScanning().getSoundMode();
 
-              if (mounted) {
-                setState(() {
-                  _sound = value;
-                });
+                if (mounted) {
+                  setState(() {
+                    _sound = value;
+                  });
+                }
+              } on Exception {
+                //catch but do nothing
               }
             }),
 

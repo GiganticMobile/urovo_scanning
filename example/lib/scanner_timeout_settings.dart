@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 
@@ -17,13 +19,17 @@ class _ScannerTimeoutSettingsState extends State<ScannerTimeoutSettings> {
   @override
   void initState() {
     super.initState();
-    UrovoScanning().getTimeout().then((value) {
-      if (mounted) {
-        setState(() {
-          _timOutInSeconds = value;
-        });
-      }
-    });
+    unawaited(
+        UrovoScanning().getTimeout().then((value) {
+          if (mounted) {
+            setState(() {
+              _timOutInSeconds = value;
+            });
+          }
+        }, onError: (error) {
+          //catch error but do nothing
+        })
+    );
   }
 
   @override

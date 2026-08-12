@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 
@@ -17,13 +19,17 @@ class _ScanButtonsSettingsWidgetState extends State<ScanButtonsSettingsWidget> {
   @override
   void initState() {
     super.initState();
-    UrovoScanning().isTriggerEnabled().then((value) {
-      if (mounted) {
-        setState(() {
-          _scanButtonsEnabled = value;
-        });
-      }
-    });
+    unawaited(
+        UrovoScanning().isTriggerEnabled().then((value) {
+          if (mounted) {
+            setState(() {
+              _scanButtonsEnabled = value;
+            });
+          }
+        }, onError: (error) {
+          //catch error but do nothing
+        })
+    );
   }
 
   @override

@@ -24,7 +24,11 @@ class ScannerHandler {
     if (defaultTargetPlatform == TargetPlatform.android) {
       final manufacture = await _messageHandler.getDeviceManufacture();
       if (manufacture == 'Urovo') {
-        return true;
+
+        //opens and closes the scanner to check if it exists
+        final hasScanner = await _messageHandler.hasDeviceScanner();
+
+        return hasScanner;
       } else {
         return false;
       }
@@ -64,23 +68,43 @@ class ScannerHandler {
 
   ///start a scan programmatically
   Future<void> startScanning() async {
-    await _messageHandler.startScanning();
+    try {
+      await _messageHandler.startScanning();
+    } on Exception {
+      throw Exception('Unable to start scanning. '
+          'This might be because the device has already started scanning, '
+          'the device does not have a built in scanner '
+          'or is not a UROVO device.');
+    }
   }
 
   ///stop a scan programmatically
   Future<void> stopScanning() async {
-    await _messageHandler.stopScanning();
+    try {
+      await _messageHandler.stopScanning();
+    } on Exception {
+      throw Exception('Unable to stop scanning. '
+          'This might be because the device has already stopped scanning, '
+          'the device does not have a built in scanner '
+          'or is not a UROVO device.');
+    }
   }
 
   ///get the maximum amount of time that the scanner can be on for
   Future<double> getTimeout() async {
-    final time = await _messageHandler.getTimeOut();
+    try {
+      final time = await _messageHandler.getTimeOut();
 
-    //the time is returned in tenths of seconds (i.e. 100ms)
-    // so 10 equals 1 second
-    //so time is divided by 10 and rounded to 2 decimal places
-    final mod = pow(10, 2).toDouble();
-    return ((time / 10) * mod).round().toDouble() / mod;
+      //the time is returned in tenths of seconds (i.e. 100ms)
+      // so 10 equals 1 second
+      //so time is divided by 10 and rounded to 2 decimal places
+      final mod = pow(10, 2).toDouble();
+      return ((time / 10) * mod).round().toDouble() / mod;
+    } on Exception {
+      throw Exception('Unable to get time out. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
   }
 
   ///set the maximum amount of time that the scanner can be on for
@@ -88,21 +112,33 @@ class ScannerHandler {
     //the timeout value should be set to a 1 tenth of a second ( 100 ms) scale
     //so 1 second becomes 10
 
-    final scaledTimeOut = (timeout * 10).round();
-    await _messageHandler.setTimeOut(scaledTimeOut);
+    try {
+      final scaledTimeOut = (timeout * 10).round();
+      await _messageHandler.setTimeOut(scaledTimeOut);
+    } on Exception {
+      throw Exception('Unable to set time out. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
   }
 
   ///get what sound the scanner will make if it successfully
   Future<Sound> getSoundMode() async {
-    final id = await _messageHandler.getSoundMode();
-    //0 : None
-    //1 : Short
-    //2 : Sharp
-    switch(id) {
-      case 0: return Sound.none;
-      case 1: return Sound.short;
-      case 2: return Sound.sharp;
-      default: throw Exception('unknown sound mode');
+    try {
+      final id = await _messageHandler.getSoundMode();
+      //0 : None
+      //1 : Short
+      //2 : Sharp
+      switch(id) {
+        case 0: return Sound.none;
+        case 1: return Sound.short;
+        case 2: return Sound.sharp;
+        default: throw Exception('unknown sound mode');
+      }
+    } on Exception {
+      throw Exception('Unable to set sound mode. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
     }
   }
 
@@ -119,34 +155,64 @@ class ScannerHandler {
         id = 2;
     }
 
-    return _messageHandler.setSoundMode(id);
+    try {
+      return _messageHandler.setSoundMode(id);
+    } on Exception {
+      throw Exception('Unable to set sound mode. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
   }
 
   ///check if the scanner will vibrate if the scan is successful
   Future<bool> isVibrationEnabled() async {
-    return _messageHandler.isVibrationEnabled();
+    try {
+      return _messageHandler.isVibrationEnabled();
+    } on Exception {
+      throw Exception('Unable to find vibration status. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
   }
 
   ///set if the scanner will vibrate if the scan is successful
   Future<void> enableVibration({required bool enable}) async {
-    if (enable) {
-      await _messageHandler.enableVibration();
-    } else {
-      await _messageHandler.disableVibration();
+    try {
+      if (enable) {
+        await _messageHandler.enableVibration();
+      } else {
+        await _messageHandler.disableVibration();
+      }
+    } on Exception {
+      throw Exception('Unable to set vibration status. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
     }
   }
 
   ///check if the scanner's buttons are enabled
   Future<bool> isTriggerEnabled() {
-    return _messageHandler.isTriggerEnabled();
+    try {
+      return _messageHandler.isTriggerEnabled();
+    } on Exception {
+      throw Exception('Unable to find trigger status. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
   }
 
   ///set if the scanner's buttons are enabled
   Future<void> enableTrigger({required bool enable}) async {
-    if (enable) {
-      await _messageHandler.enableTrigger();
-    } else {
-      await _messageHandler.disableTrigger();
+    try {
+      if (enable) {
+        await _messageHandler.enableTrigger();
+      } else {
+        await _messageHandler.disableTrigger();
+      }
+    } on Exception {
+      throw Exception('Unable to set trigger status. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
     }
   }
 
@@ -175,32 +241,50 @@ class ScannerHandler {
         id = 1;
     }
 
-    await _messageHandler.setScanMode(id);
+    try {
+      await _messageHandler.setScanMode(id);
+    } on Exception {
+      throw Exception('Unable set scan mode of ${mode.name}. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
   }
 
   ///get the types of barcodes the scanner is able to scan
   Future<List<c.Code>> getCodes() async {
-    final codes = await _messageHandler.getCodes();
-    return codes.map((code) {
+    try {
+      final codes = await _messageHandler.getCodes();
+      return codes.map((code) {
+        return c.Code(
+            id: code.id,
+            type: code.type,
+            supported: code.supported,
+            enabled: code.enabled);
+      }).toList();
+    } on Exception {
+      throw Exception('Unable to get barcode types (codes). '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
+  }
+
+  ///get single barcode type
+  Future<c.Code?> getCode(int codeId) async {
+    try {
+      final code = await _messageHandler.getCode(codeId);
+      if (code == null) {
+        return null;
+      }
       return c.Code(
           id: code.id,
           type: code.type,
           supported: code.supported,
           enabled: code.enabled);
-    }).toList();
-  }
-
-  ///get single barcode type
-  Future<c.Code?> getCode(int codeId) async {
-    final code = await _messageHandler.getCode(codeId);
-    if (code == null) {
-      return null;
+    } on Exception {
+      throw Exception('Unable get code with id of $codeId. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
     }
-    return c.Code(
-        id: code.id,
-        type: code.type,
-        supported: code.supported,
-        enabled: code.enabled);
   }
 
   ///get the types of barcodes that scanner can scan
@@ -215,25 +299,43 @@ class ScannerHandler {
 
   ///enable or disable a specific barcode type
   Future<void> enabledCode({required c.Code code, required bool enable}) async {
-    if (enable) {
-      await _messageHandler.enableCode(code.id);
-    } else {
-      await _messageHandler.disableCode(code.id);
+    try {
+      if (enable) {
+        await _messageHandler.enableCode(code.id);
+      } else {
+        await _messageHandler.disableCode(code.id);
+      }
+    } on Exception {
+      throw Exception('Unable to enable ${code.type}. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
     }
   }
 
   ///disables all code so the scanner is stopped from reading any code
   Future<void> enableAllCodes({required bool enable}) async {
-    if (enable) {
-      await _messageHandler.enableAllCodes();
-    } else {
-      await _messageHandler.disableAllCodes();
+    try {
+      if (enable) {
+        await _messageHandler.enableAllCodes();
+      } else {
+        await _messageHandler.disableAllCodes();
+      }
+    } on Exception {
+      throw Exception('Unable to enable all codes (barcode types). '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
     }
   }
 
   ///reset all scanner settings to the default
   Future<void> resetScanner() async {
-    await _messageHandler.resetScanner();
+    try {
+      await _messageHandler.resetScanner();
+    } on Exception {
+      throw Exception('Unable rest scanner. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
   }
 
 }

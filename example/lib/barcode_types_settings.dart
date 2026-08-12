@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:urovo_scanning/Code.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
@@ -18,13 +20,17 @@ class _BarcodeTypesSettingsState extends State<BarcodeTypesSettings> {
   @override
   void initState() {
     super.initState();
-    UrovoScanning().getCodes().then((codes) {
-      if (mounted) {
-        setState(() {
-          _codes = codes;
-        });
-      }
-    });
+    unawaited(
+        UrovoScanning().getCodes().then((codes,) {
+          if (mounted) {
+            setState(() {
+              _codes = codes;
+            });
+          }
+        }, onError: (error) {
+          //catch error but do nothing
+        })
+    );
   }
 
   @override
@@ -71,11 +77,16 @@ class _UniversalBarcodeTypeSettingsState extends State<UniversalBarcodeTypeSetti
   @override
   void initState() {
     super.initState();
-    _setup();
+    unawaited(_setup());
   }
 
   Future<void> _setup() async {
-    final codes = await UrovoScanning().getSupportedCodes();
+    List<Code> codes;
+    try {
+      codes = await UrovoScanning().getSupportedCodes();
+    } on Exception {
+      codes = [];
+    }
 
     //if at least 1 code is enabled then it cannot be all disabled
     final enabledCode = codes.where((code) => code.isEnabled()).firstOrNull;
@@ -106,14 +117,18 @@ class _UniversalBarcodeTypeSettingsState extends State<UniversalBarcodeTypeSetti
         subtitle: const Text('Enable or disable all barcode types'),
         value: _allTypesEnabled,
         tristate: true,
-        onChanged: (value) async {
+        onChanged: (value) {
           if (value != null) {
-            if (value) {
-              await UrovoScanning().enableAllCodes(enable: true);
-            } else {
-              await UrovoScanning().enableAllCodes(enable: false);
+            try {
+              if (value) {
+                unawaited(UrovoScanning().enableAllCodes(enable: true));
+              } else {
+                unawaited(UrovoScanning().enableAllCodes(enable: false));
+              }
+              unawaited(_setup());
+            } on Exception {
+              //catch but do nothing
             }
-            await _setup();
           } else {
             setState(() {
               _allTypesEnabled = null;
