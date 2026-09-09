@@ -335,8 +335,8 @@ val urovo_message_interfacePigeonMethodCodec = StandardMethodCodec(urovo_message
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface UrovoMessageInterface {
-  fun hasDeviceScanner(callback: (Result<Boolean>) -> Unit)
   fun getDeviceManufacture(callback: (Result<String>) -> Unit)
+  fun getDeviceModel(callback: (Result<String>) -> Unit)
   fun startScanning()
   fun stopScanning()
   fun getTimeOut(callback: (Result<Long>) -> Unit)
@@ -369,10 +369,10 @@ interface UrovoMessageInterface {
     fun setUp(binaryMessenger: BinaryMessenger, api: UrovoMessageInterface?, messageChannelSuffix: String = "") {
       val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.hasDeviceScanner$separatedMessageChannelSuffix", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getDeviceManufacture$separatedMessageChannelSuffix", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
-            api.hasDeviceScanner{ result: Result<Boolean> ->
+            api.getDeviceManufacture{ result: Result<String> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(UrovoMessageInterfacePigeonUtils.wrapError(error))
@@ -387,10 +387,10 @@ interface UrovoMessageInterface {
         }
       }
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getDeviceManufacture$separatedMessageChannelSuffix", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getDeviceModel$separatedMessageChannelSuffix", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
-            api.getDeviceManufacture{ result: Result<String> ->
+            api.getDeviceModel{ result: Result<String> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(UrovoMessageInterfacePigeonUtils.wrapError(error))

@@ -25,10 +25,7 @@ class ScannerHandler {
       final manufacture = await _messageHandler.getDeviceManufacture();
       if (manufacture == 'Urovo') {
 
-        //opens and closes the scanner to check if it exists
-        final hasScanner = await _messageHandler.hasDeviceScanner();
-
-        return hasScanner;
+        return  true;//_isSupportedDevice();
       } else {
         return false;
       }
@@ -36,6 +33,31 @@ class ScannerHandler {
       return false;
     }
   }
+
+  //might be useful in the future
+  /*Future<bool> _isSupportedDevice() async {
+
+    /*
+    checks if the device is one that would have a built it scanner
+     */
+
+    final supported = [
+      'DT50',
+    ];
+
+    final model = await _messageHandler.getDeviceModel();
+
+    //print('Device model is $model');
+
+    if (supported.where(model.contains).isNotEmpty) {
+      //checks if the model is one of the supported devices
+      //contains is used as there might be multiple variations of the same
+      //device such as DT50 and DT50Q (as the Q marks the device as a subtype)
+      return true;
+    } else {
+      return false;
+    }
+  }*/
 
   ///stream of barcodes of type string
   Stream<String> barcodeStringSteam() {

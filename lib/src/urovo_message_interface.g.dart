@@ -266,8 +266,8 @@ class UrovoMessageInterface {
 
   final String pigeonVar_messageChannelSuffix;
 
-  Future<bool> hasDeviceScanner() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.hasDeviceScanner$pigeonVar_messageChannelSuffix';
+  Future<String> getDeviceManufacture() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getDeviceManufacture$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -282,11 +282,11 @@ class UrovoMessageInterface {
         isNullValid: false,
     )
     ;
-    return pigeonVar_replyValue! as bool;
+    return pigeonVar_replyValue! as String;
   }
 
-  Future<String> getDeviceManufacture() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getDeviceManufacture$pigeonVar_messageChannelSuffix';
+  Future<String> getDeviceModel() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getDeviceModel$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,

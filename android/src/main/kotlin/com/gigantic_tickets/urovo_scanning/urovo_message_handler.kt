@@ -12,7 +12,12 @@ class urovo_message_handler : UrovoMessageInterface {
         callback.invoke(Result.success(deviceMan ?: ""))
     }
 
-    override fun hasDeviceScanner(callback: (Result<Boolean>) -> Unit) {
+    override fun getDeviceModel(callback: (Result<String>) -> Unit) {
+        val deviceModel: String? = android.os.Build.MODEL
+        callback.invoke(Result.success(deviceModel ?: ""))
+    }
+
+    /*override fun hasDeviceScanner(callback: (Result<Boolean>) -> Unit) {
         try {
             val scanManager = BarcodeScanManager()
             val result = scanManager.hasScanner()
@@ -20,7 +25,7 @@ class urovo_message_handler : UrovoMessageInterface {
         } catch (_ : Exception) {
             callback.invoke(Result.success(false))
         }
-    }
+    }*/
 
     override fun startScanning() {
         try {
