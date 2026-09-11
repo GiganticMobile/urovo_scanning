@@ -48,7 +48,13 @@ class BarcodeScanManager {
     }
 
     fun stopListening() {
-        closeScanner()
+        /*
+        There might be a better solution to this by checking if the
+        device is a urovo device so can close the scanner.
+        However, the scanner will automatically be closed when the timeout
+        runs out.
+         */
+        //closeScanner()
     }
 
     fun getIntentFilter() : IntentFilter {
