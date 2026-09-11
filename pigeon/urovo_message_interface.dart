@@ -45,6 +45,10 @@ abstract class UrovoMessageInterface {
   //wants.
   void startScanning();
 
+  //this allows the plugin to start a scan and return an image
+  //of the barcode in the scan result.
+  void startScanningReturnImage();
+
   //this stops an already in progress scan
   void stopScanning();
 

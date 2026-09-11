@@ -3,8 +3,10 @@ package com.gigantic_tickets.urovo_scanning
 import Code
 import FlutterError
 import UrovoMessageInterface
+import android.content.Context
+import android.content.Intent
 
-class urovo_message_handler : UrovoMessageInterface {
+class urovo_message_handler(private val context : Context?) : UrovoMessageInterface {
 
     override fun getDeviceManufacture(callback: (Result<String>) -> Unit) {
         //val deviceName: String? = android.os.Build.MODEL
@@ -33,6 +35,20 @@ class urovo_message_handler : UrovoMessageInterface {
             scanManager.start()
         } catch (e : Exception) {
             throw FlutterError("start scanning", e.message)
+        }
+    }
+
+    override fun startScanningReturnImage() {
+        try {
+            val scanManager = BarcodeScanManager()
+            val ctx = context
+            if (ctx != null) {
+                val intent: Intent = Intent("action.scanner_capture_image")
+                ctx.sendBroadcast(intent)
+            }
+            scanManager.start()
+        } catch (e : Exception) {
+            throw FlutterError("start scanning and return image", e.message)
         }
     }
 

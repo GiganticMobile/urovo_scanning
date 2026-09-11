@@ -60,9 +60,14 @@ class BarcodeScanManager {
         )
         val value_buf: Array<String?> = scanManager.getParameterString(idbuf)
         if (value_buf[0] != null && value_buf[0] != "") {
-            filter.addAction(value_buf[0])
-        } else {
+            //filter.addAction(value_buf[0])
             filter.addAction(ACTION_DECODE)
+            filter.addAction("action.scanner_capture_image")
+            filter.addAction("scanner_capture_image_result")
+        } else {
+            //filter.addAction(ACTION_DECODE)
+            filter.addAction("action.scanner_capture_image")
+            filter.addAction("scanner_capture_image_result")
         }
 
         return filter

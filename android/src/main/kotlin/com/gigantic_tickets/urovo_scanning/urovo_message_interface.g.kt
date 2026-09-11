@@ -338,6 +338,7 @@ interface UrovoMessageInterface {
   fun getDeviceManufacture(callback: (Result<String>) -> Unit)
   fun getDeviceModel(callback: (Result<String>) -> Unit)
   fun startScanning()
+  fun startScanningReturnImage()
   fun stopScanning()
   fun getTimeOut(callback: (Result<Long>) -> Unit)
   fun setTimeOut(timeout: Long)
@@ -410,6 +411,22 @@ interface UrovoMessageInterface {
           channel.setMessageHandler { _, reply ->
             val wrapped: List<Any?> = try {
               api.startScanning()
+              listOf(null)
+            } catch (exception: Throwable) {
+              UrovoMessageInterfacePigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.startScanningReturnImage$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              api.startScanningReturnImage()
               listOf(null)
             } catch (exception: Throwable) {
               UrovoMessageInterfacePigeonUtils.wrapError(exception)

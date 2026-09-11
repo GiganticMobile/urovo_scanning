@@ -17,7 +17,7 @@ class UrovoScanningPlugin : FlutterPlugin {
         context = binding.applicationContext
 
         //connecting android plugin to flutter code
-        val api = urovo_message_handler()
+        val api = urovo_message_handler(context)
         UrovoMessageInterface.setUp(binding.getBinaryMessenger(), api)
 
         val eventListener = urovo_barcode_event_channel()

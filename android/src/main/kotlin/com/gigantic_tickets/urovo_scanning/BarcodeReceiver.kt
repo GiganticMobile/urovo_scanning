@@ -9,6 +9,7 @@ import android.device.ScanManager.BARCODE_LENGTH_TAG
 import android.device.ScanManager.BARCODE_STRING_TAG
 import android.device.ScanManager.BARCODE_TYPE_TAG
 import android.device.ScanManager.DECODE_DATA_TAG
+import android.util.Log
 
 class BarcodeReceiver : BroadcastReceiver() {
 
@@ -18,10 +19,18 @@ class BarcodeReceiver : BroadcastReceiver() {
         this.callback = callback
     }
 
-    private val ACTION_DECODE_DATA = "android.intent.ACTION_DECODE_DATA"
+    //private val ACTION_DECODE_DATA = "android.intent.ACTION_DECODE_DATA"
+    private val ACTION_GET_IMAGE = "scanner_capture_image_result"
     override fun onReceive(context: Context?, intent: Intent?) {
         val action = intent?.action
-        if (ACTION_DECODE_DATA == action) {
+        Log.d("BARCODE_RECEIVER", "on receive")
+        Log.d("BARCODE_RECEIVER", "action is " + action)
+        if (ACTION_GET_IMAGE == action) {
+            Log.d("BARCODE_RECEIVER", "got result")
+            val imageData: ByteArray? = intent.getByteArrayExtra("bitmapBytes")
+            Log.d("BARCODE_RECEIVER", "image byte length is " + imageData?.size)
+        }
+        /*if (ACTION_DECODE_DATA == action) {
             // Get results from the laser scanner
 
             /*val extra = intent?.getExtras()
@@ -51,7 +60,7 @@ class BarcodeReceiver : BroadcastReceiver() {
             } catch (_ : Exception) {
                 //could not read scan result
             }
-        }
+        }*/
 
     }
 
