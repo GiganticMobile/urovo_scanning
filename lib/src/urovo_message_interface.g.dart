@@ -266,6 +266,61 @@ class UrovoMessageInterface {
 
   final String pigeonVar_messageChannelSuffix;
 
+  Future<void> openScanner() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.openScanner$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  Future<void> closeScanner() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.closeScanner$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  Future<bool> getScannerStat() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getScannerStat$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as bool;
+  }
+
   Future<String> getDeviceManufacture() async {
     final pigeonVar_channelName = 'dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getDeviceManufacture$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
@@ -306,24 +361,6 @@ class UrovoMessageInterface {
 
   Future<void> startScanning() async {
     final pigeonVar_channelName = 'dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.startScanning$pigeonVar_messageChannelSuffix';
-    final pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
-    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
-
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
-  }
-
-  Future<void> startScanningReturnImage() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.startScanningReturnImage$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -717,6 +754,17 @@ Stream<Barcode> onBarcodeChanged( {String instanceName = ''}) {
       EventChannel('dev.flutter.pigeon.urovo_scanning_package.UrovoBarcodeInterface.onBarcodeChanged$instanceName', pigeonMethodCodec);
   return onBarcodeChangedChannel.receiveBroadcastStream().map((dynamic event) {
     return event as Barcode;
+  });
+}
+    
+Stream<Uint8List> onBarcodeImageChanged( {String instanceName = ''}) {
+  if (instanceName.isNotEmpty) {
+    instanceName = '.$instanceName';
+  }
+  final EventChannel onBarcodeImageChangedChannel =
+      EventChannel('dev.flutter.pigeon.urovo_scanning_package.UrovoBarcodeInterface.onBarcodeImageChanged$instanceName', pigeonMethodCodec);
+  return onBarcodeImageChangedChannel.receiveBroadcastStream().map((dynamic event) {
+    return event as Uint8List;
   });
 }
     

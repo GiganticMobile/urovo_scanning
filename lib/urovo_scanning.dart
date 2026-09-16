@@ -38,6 +38,11 @@ class UrovoScanning implements UrovoScanningInterface {
   }
 
   @override
+  Stream<Uint8List> barcodeImageStream() {
+    return _scannerHandler.barcodeImageStream();
+  }
+
+  @override
   Future<void> enableAllCodes({required bool enable}) {
     return _scannerHandler.enableAllCodes(enable: enable);
   }
@@ -130,5 +135,10 @@ class UrovoScanning implements UrovoScanningInterface {
   @override
   Future<void> stopScanning() {
     return _scannerHandler.stopScanning();
+  }
+
+  @override
+  Future<void> closeScanner() {
+    return _scannerHandler.closeScanner();
   }
 }

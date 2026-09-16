@@ -1,6 +1,9 @@
 package com.gigantic_tickets.urovo_scanning
 
 import Barcode
+import android.device.ScanManager
+import android.device.ScanManager.ACTION_DECODE
+import android.device.scanner.configuration.PropertyID
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -19,25 +22,10 @@ class BarcodeReceiver : BroadcastReceiver() {
         this.callback = callback
     }
 
-    //private val ACTION_DECODE_DATA = "android.intent.ACTION_DECODE_DATA"
-    private val ACTION_GET_IMAGE = "scanner_capture_image_result"
+    private val ACTION_DECODE_DATA = "android.intent.ACTION_DECODE_DATA"
     override fun onReceive(context: Context?, intent: Intent?) {
         val action = intent?.action
-        Log.d("BARCODE_RECEIVER", "on receive")
-        Log.d("BARCODE_RECEIVER", "action is " + action)
-        if (ACTION_GET_IMAGE == action) {
-            Log.d("BARCODE_RECEIVER", "got result")
-            val imageData: ByteArray? = intent.getByteArrayExtra("bitmapBytes")
-            Log.d("BARCODE_RECEIVER", "image byte length is " + imageData?.size)
-        }
-        /*if (ACTION_DECODE_DATA == action) {
-            // Get results from the laser scanner
-
-            /*val extra = intent?.getExtras()
-            for (key in extra!!.keySet()) {
-                Log.d("BARCODE_RECEIVER", "extra key is ${key}")
-                Log.d("BARCODE_RECEIVER", "extra is ${extra!!.get(key)}")
-            }*/
+        if (ACTION_DECODE_DATA == action) {
 
             val barcodeBytes: ByteArray? = intent?.getByteArrayExtra(DECODE_DATA_TAG)
 
@@ -60,12 +48,27 @@ class BarcodeReceiver : BroadcastReceiver() {
             } catch (_ : Exception) {
                 //could not read scan result
             }
-        }*/
+        }
 
     }
 
     companion object {
-        fun register(context: Context, receiver: BarcodeReceiver, filter: IntentFilter) {
+        fun register(context: Context, receiver: BarcodeReceiver,) {
+
+            val scanManager = ScanManager()
+
+            val filter = IntentFilter()
+            val idbuf = intArrayOf(
+                PropertyID.WEDGE_INTENT_ACTION_NAME,
+                PropertyID.WEDGE_INTENT_DATA_STRING_TAG
+            )
+            val value_buf: Array<String?> = scanManager.getParameterString(idbuf)
+            if (value_buf[0] != null && value_buf[0] != "") {
+                filter.addAction(value_buf[0])
+            } else {
+                filter.addAction(ACTION_DECODE)
+            }
+
             context.registerReceiver(receiver, filter)
         }
 

@@ -335,10 +335,12 @@ val urovo_message_interfacePigeonMethodCodec = StandardMethodCodec(urovo_message
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface UrovoMessageInterface {
+  fun openScanner()
+  fun closeScanner()
+  fun getScannerStat(callback: (Result<Boolean>) -> Unit)
   fun getDeviceManufacture(callback: (Result<String>) -> Unit)
   fun getDeviceModel(callback: (Result<String>) -> Unit)
   fun startScanning()
-  fun startScanningReturnImage()
   fun stopScanning()
   fun getTimeOut(callback: (Result<Long>) -> Unit)
   fun setTimeOut(timeout: Long)
@@ -369,6 +371,56 @@ interface UrovoMessageInterface {
     @JvmOverloads
     fun setUp(binaryMessenger: BinaryMessenger, api: UrovoMessageInterface?, messageChannelSuffix: String = "") {
       val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.openScanner$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              api.openScanner()
+              listOf(null)
+            } catch (exception: Throwable) {
+              UrovoMessageInterfacePigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.closeScanner$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              api.closeScanner()
+              listOf(null)
+            } catch (exception: Throwable) {
+              UrovoMessageInterfacePigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getScannerStat$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.getScannerStat{ result: Result<Boolean> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(UrovoMessageInterfacePigeonUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(UrovoMessageInterfacePigeonUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
       run {
         val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getDeviceManufacture$separatedMessageChannelSuffix", codec)
         if (api != null) {
@@ -411,22 +463,6 @@ interface UrovoMessageInterface {
           channel.setMessageHandler { _, reply ->
             val wrapped: List<Any?> = try {
               api.startScanning()
-              listOf(null)
-            } catch (exception: Throwable) {
-              UrovoMessageInterfacePigeonUtils.wrapError(exception)
-            }
-            reply.reply(wrapped)
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.startScanningReturnImage$separatedMessageChannelSuffix", codec)
-        if (api != null) {
-          channel.setMessageHandler { _, reply ->
-            val wrapped: List<Any?> = try {
-              api.startScanningReturnImage()
               listOf(null)
             } catch (exception: Throwable) {
               UrovoMessageInterfacePigeonUtils.wrapError(exception)
@@ -837,6 +873,23 @@ abstract class OnBarcodeChangedStreamHandler : urovo_message_interfacePigeonEven
   }
 // Implement methods from urovo_message_interfacePigeonEventChannelWrapper
 override fun onListen(p0: Any?, sink: PigeonEventSink<Barcode>) {}
+
+override fun onCancel(p0: Any?) {}
+}
+      
+abstract class OnBarcodeImageChangedStreamHandler : urovo_message_interfacePigeonEventChannelWrapper<ByteArray> {
+  companion object {
+    fun register(messenger: BinaryMessenger, streamHandler: OnBarcodeImageChangedStreamHandler, instanceName: String = "") {
+      var channelName: String = "dev.flutter.pigeon.urovo_scanning_package.UrovoBarcodeInterface.onBarcodeImageChanged"
+      if (instanceName.isNotEmpty()) {
+        channelName += ".$instanceName"
+      }
+      val internalStreamHandler = urovo_message_interfacePigeonStreamHandler<ByteArray>(streamHandler)
+      EventChannel(messenger, channelName, urovo_message_interfacePigeonMethodCodec).setStreamHandler(internalStreamHandler)
+    }
+  }
+// Implement methods from urovo_message_interfacePigeonEventChannelWrapper
+override fun onListen(p0: Any?, sink: PigeonEventSink<ByteArray>) {}
 
 override fun onCancel(p0: Any?) {}
 }

@@ -1,9 +1,7 @@
 package com.gigantic_tickets.urovo_scanning
 
 import Code
-import android.content.IntentFilter
 import android.device.ScanManager
-import android.device.ScanManager.ACTION_DECODE
 import android.device.scanner.configuration.PropertyID
 import android.device.scanner.configuration.Symbology
 import android.device.scanner.configuration.Triggering
@@ -13,7 +11,7 @@ class BarcodeScanManager {
 
     private val scanManager = ScanManager()
 
-    private fun openScanner() {
+    fun openScanner() {
         val powerOn = scanManager.scannerState
         if (!powerOn) {
             val successfullyOpened = scanManager.openScanner()
@@ -23,7 +21,7 @@ class BarcodeScanManager {
         }
     }
 
-    private fun closeScanner() {
+    fun closeScanner() {
         val powerOn = scanManager.scannerState
         if (powerOn) {
             val successfullyClosed = scanManager.closeScanner()
@@ -31,6 +29,11 @@ class BarcodeScanManager {
                 throw Exception("unable to close scanner")
             }
         }
+    }
+
+    fun getScannerStatus() : Boolean {
+        val powerOn = scanManager.scannerState
+        return powerOn
     }
 
     //start listening to barcode scanning events
@@ -55,44 +58,6 @@ class BarcodeScanManager {
         runs out.
          */
         //closeScanner()
-    }
-
-    fun getIntentFilter() : IntentFilter {
-
-        val filter = IntentFilter()
-        val idbuf = intArrayOf(
-            PropertyID.WEDGE_INTENT_ACTION_NAME,
-            PropertyID.WEDGE_INTENT_DATA_STRING_TAG
-        )
-        val value_buf: Array<String?> = scanManager.getParameterString(idbuf)
-        if (value_buf[0] != null && value_buf[0] != "") {
-            //filter.addAction(value_buf[0])
-            filter.addAction(ACTION_DECODE)
-            filter.addAction("action.scanner_capture_image")
-            filter.addAction("scanner_capture_image_result")
-        } else {
-            //filter.addAction(ACTION_DECODE)
-            filter.addAction("action.scanner_capture_image")
-            filter.addAction("scanner_capture_image_result")
-        }
-
-        return filter
-    }
-
-    fun hasScanner() : Boolean {
-        try {
-            openScanner()
-            closeScanner()
-
-            //scanner opened and closed without error
-            //so device should have scanner
-            return true
-        }  catch (_: Exception) {
-            //opening or closing the scanner failed
-            //this is most likely because the device
-            //does not have a scanner
-            return false
-        }
     }
 
     fun start() {

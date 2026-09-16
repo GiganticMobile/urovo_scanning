@@ -35,6 +35,13 @@ abstract class UrovoMessageInterface {
   /*@async
   bool hasDeviceScanner();*/
 
+  void openScanner();
+
+  void closeScanner();
+
+  @async
+  bool getScannerStat();
+
   @async
   String getDeviceManufacture();
 
@@ -47,7 +54,7 @@ abstract class UrovoMessageInterface {
 
   //this allows the plugin to start a scan and return an image
   //of the barcode in the scan result.
-  void startScanningReturnImage();
+  //void startScanningReturnImage();
 
   //this stops an already in progress scan
   void stopScanning();
@@ -105,6 +112,8 @@ abstract class UrovoMessageInterface {
 abstract class UrovoBarcodeInterface {
 
   Barcode onBarcodeChanged();
+
+  Uint8List onBarcodeImageChanged();
 
 }
 

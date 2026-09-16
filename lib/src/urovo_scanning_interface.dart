@@ -24,6 +24,9 @@ abstract class UrovoScanningInterface {
   ///If the scan is successful the stream will return [Barcode]
   Stream<Barcode> barcodeStream();
 
+  ///stream of all the images taken when scanning a barcode.
+  Stream<Uint8List> barcodeImageStream();
+
   ///start a scan programmatically
   ///For example start a scan with a UI button press
   ///<br />When started the scanner will automatically turn off if the
@@ -33,6 +36,14 @@ abstract class UrovoScanningInterface {
   ///stop a scan programmatically
   ///For example stopping a scan with a UI button press
   Future<void> stopScanning();
+
+  ///turn off power to the barcode reader
+  ///<br />Warning closing the scanner will disrupt any of the streams
+  ///the plugin provides. So ensure closing the scanner is the last
+  ///thing the app does.
+  ///<br />There is no open version as the plugin tries to open the scanner
+  ///when the app starts to interact with it.
+  Future<void> closeScanner();
 
   ///get the maximum amount of time that the scanner can be on for
   Future<double> getTimeout();

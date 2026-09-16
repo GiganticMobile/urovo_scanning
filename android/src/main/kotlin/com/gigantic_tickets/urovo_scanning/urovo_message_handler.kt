@@ -3,13 +3,10 @@ package com.gigantic_tickets.urovo_scanning
 import Code
 import FlutterError
 import UrovoMessageInterface
-import android.content.Context
-import android.content.Intent
 
-class urovo_message_handler(private val context : Context?) : UrovoMessageInterface {
+class urovo_message_handler : UrovoMessageInterface {
 
     override fun getDeviceManufacture(callback: (Result<String>) -> Unit) {
-        //val deviceName: String? = android.os.Build.MODEL
         val deviceMan: String? = android.os.Build.MANUFACTURER
         callback.invoke(Result.success(deviceMan ?: ""))
     }
@@ -19,15 +16,33 @@ class urovo_message_handler(private val context : Context?) : UrovoMessageInterf
         callback.invoke(Result.success(deviceModel ?: ""))
     }
 
-    /*override fun hasDeviceScanner(callback: (Result<Boolean>) -> Unit) {
+    override fun openScanner() {
         try {
             val scanManager = BarcodeScanManager()
-            val result = scanManager.hasScanner()
-            callback.invoke(Result.success(result))
-        } catch (_ : Exception) {
-            callback.invoke(Result.success(false))
+            scanManager.openScanner()
+        } catch (e : Exception) {
+            throw FlutterError("open scanner error", e.message)
         }
-    }*/
+    }
+
+    override fun closeScanner() {
+        try {
+            val scanManager = BarcodeScanManager()
+            scanManager.closeScanner()
+        } catch (e : Exception) {
+            throw FlutterError("close scanner error", e.message)
+        }
+    }
+
+    override fun getScannerStat(callback: (Result<Boolean>) -> Unit) {
+        try {
+            val scanManager = BarcodeScanManager()
+            val status = scanManager.getScannerStatus()
+            callback.invoke(Result.success(status))
+        } catch (e : Exception) {
+            throw FlutterError("get scanner status error", e.message)
+        }
+    }
 
     override fun startScanning() {
         try {
@@ -35,20 +50,6 @@ class urovo_message_handler(private val context : Context?) : UrovoMessageInterf
             scanManager.start()
         } catch (e : Exception) {
             throw FlutterError("start scanning", e.message)
-        }
-    }
-
-    override fun startScanningReturnImage() {
-        try {
-            val scanManager = BarcodeScanManager()
-            val ctx = context
-            if (ctx != null) {
-                val intent: Intent = Intent("action.scanner_capture_image")
-                ctx.sendBroadcast(intent)
-            }
-            scanManager.start()
-        } catch (e : Exception) {
-            throw FlutterError("start scanning and return image", e.message)
         }
     }
 

@@ -71,7 +71,16 @@ the scanner could get after scanning the barcode.
     barcode.type;
   });
 ```
+- barcodeImageStream
+Stream of images. Each image displays the barcode the device has successfully
+scanned.
+```dart
+  import 'package:urovo_scanning/urovo_scanning.dart';
 
+  UrovoScanning().barcodeImageStream().listen((imageBytes) {
+  
+  });
+```
 - startScanning
 Start scanning programmatically. When started the scanner will automatically
 stop if the scanner's time out is reached.
@@ -97,7 +106,17 @@ Stop scanning programmatically.
     child: const Text('Stop')
   )
 ```
+- closeScanner
+This turns off the scanner.
+```dart
+  import 'package:urovo_scanning/urovo_scanning.dart';
 
+  final urovoScanning = UrovoScanning();
+  if (await urovoScanning.isDeviceCompatible()) {
+    //if device is compatible turn off scanner before closing.
+    await urovoScanning.closeScanner();
+  }
+```
 - get and set time out
 Read and update the maximum amount of time the scanner can stay on for
 without successfully scanning a barcode. If the scanner does successfully

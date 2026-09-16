@@ -88,6 +88,11 @@ class ScannerHandler {
     return stream;
   }
 
+  ///an image of the most recently scanned barcode
+  Stream<Uint8List> barcodeImageStream() {
+    return onBarcodeImageChanged();
+  }
+
   ///start a scan programmatically
   Future<void> startScanning() async {
     try {
@@ -107,6 +112,18 @@ class ScannerHandler {
     } on Exception {
       throw Exception('Unable to stop scanning. '
           'This might be because the device has already stopped scanning, '
+          'the device does not have a built in scanner '
+          'or is not a UROVO device.');
+    }
+  }
+
+  ///turn off power to the barcode reader
+  Future<void> closeScanner() async {
+    try {
+      await _messageHandler.closeScanner();
+    } on Exception {
+      throw Exception('Unable to close scanner. '
+          'This might be because the device has already closed scanner, '
           'the device does not have a built in scanner '
           'or is not a UROVO device.');
     }
