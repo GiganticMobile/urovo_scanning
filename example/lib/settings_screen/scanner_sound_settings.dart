@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:urovo_scanning/Sound.dart';
+import 'package:urovo_scanning/sound.dart';
 import 'package:urovo_scanning/urovo_scanning.dart';
 
 ///set the sound the scanner makes when is successfully scans a barcode

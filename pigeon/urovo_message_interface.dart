@@ -60,23 +60,6 @@ abstract class UrovoMessageInterface {
   void stopScanning();
 
   @async
-  int getTimeOut();
-
-  void setTimeOut(int timeout);
-
-  @async
-  int? getSoundMode();
-
-  void setSoundMode(int mode);
-
-  @async
-  bool isVibrationEnabled();
-
-  void enableVibration();
-
-  void disableVibration();
-
-  @async
   bool isTriggerEnabled();
 
   //this enables the physical scan buttons on the device
@@ -103,6 +86,11 @@ abstract class UrovoMessageInterface {
   void disableCode(int codeId);
 
   void disableAllCodes();
+
+  @async
+  int getParameterValue(int id);
+
+  void setParameterValue(int id, int value);
 
   void resetScanner();
 }

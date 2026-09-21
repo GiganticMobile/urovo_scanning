@@ -12,7 +12,6 @@ import android.device.ScanManager.BARCODE_LENGTH_TAG
 import android.device.ScanManager.BARCODE_STRING_TAG
 import android.device.ScanManager.BARCODE_TYPE_TAG
 import android.device.ScanManager.DECODE_DATA_TAG
-import android.util.Log
 
 class BarcodeReceiver : BroadcastReceiver() {
 

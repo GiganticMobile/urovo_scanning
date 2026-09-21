@@ -91,101 +91,6 @@ class BarcodeScanManager {
         }
     }
 
-    fun getTimeout() : Int {
-        openScanner()
-
-        val index = intArrayOf(PropertyID.LASER_ON_TIME)
-        val value: IntArray? = scanManager.getParameterInts(index)
-
-        val time = value?.firstOrNull() ?: 0
-        return time
-    }
-
-    fun setTimeout(timeout : Int) {
-        openScanner()
-
-        val index = intArrayOf(PropertyID.LASER_ON_TIME)
-        val setTimeOutSuccessful: Int = scanManager.setParameterInts(index, intArrayOf(timeout))
-
-        if (setTimeOutSuccessful == 0) {
-            //success
-        } else {
-            throw Exception("unable to set time out")
-        }
-    }
-
-    fun getSoundSetting() : Int? {
-        openScanner()
-
-        //SEND_GOOD_READ_BEEP_ENABLE means that if the barcode
-        //was read successfully and the result was send in a broadcast receiver
-        //then the device should vibrate
-        val index = intArrayOf(PropertyID.SEND_GOOD_READ_BEEP_ENABLE)
-        val value: IntArray? = scanManager.getParameterInts(index)
-
-        //0 : None
-        //1 : Short
-        //2 : Sharp
-
-        return value?.firstOrNull()
-    }
-
-    fun setSoundMode(mode : Int) {
-        openScanner()
-
-        val index = intArrayOf(PropertyID.SEND_GOOD_READ_BEEP_ENABLE)
-        val setSoundSuccessful: Int = scanManager.setParameterInts(index, intArrayOf(mode))
-
-        if (setSoundSuccessful == 0) {
-            //success
-        } else {
-            throw Exception("unable to set sound")
-        }
-    }
-
-    fun isVibrationEnabled() : Boolean {
-
-        openScanner()
-
-        //SEND_GOOD_READ_VIBRATE_ENABLE means that if the barcode
-        //was read successfully and the result was send in a broadcast receiver
-        //then the device should vibrate
-        val index = intArrayOf(PropertyID.SEND_GOOD_READ_VIBRATE_ENABLE)
-        val value: IntArray? = scanManager.getParameterInts(index)
-
-        //0 is disbaled
-        //1 is enabled
-        return value?.firstOrNull() == 1
-    }
-
-    fun enableVibration() {
-        openScanner()
-
-        val index = intArrayOf(PropertyID.SEND_GOOD_READ_VIBRATE_ENABLE)
-        val setEnableVibrationSuccessful: Int =
-            scanManager.setParameterInts(index, intArrayOf(1))
-
-        if (setEnableVibrationSuccessful == 0) {
-            //successful
-        } else {
-            throw Exception("unable to enable vibration")
-        }
-    }
-
-    fun disableVibration() {
-        openScanner()
-
-        val index = intArrayOf(PropertyID.SEND_GOOD_READ_VIBRATE_ENABLE)
-        val setDisableVibrationSuccessful: Int =
-            scanManager.setParameterInts(index, intArrayOf(0))
-
-        if (setDisableVibrationSuccessful == 0) {
-            //successful
-        } else {
-            throw Exception("unable to disable vibration")
-        }
-    }
-
     fun isTriggerLocked() : Boolean {
         openScanner()
         //if true then the scan trigger buttons are enabled
@@ -305,6 +210,33 @@ class BarcodeScanManager {
             } else {
                 null
             }
+        }
+    }
+
+    fun getParameterValue(parameterId : Int) : Int {
+        openScanner()
+
+        val index = intArrayOf(parameterId)
+        val found: IntArray? = scanManager.getParameterInts(index)
+        val parameterValue = found?.firstOrNull() ?: 0
+
+        if (found == null) {
+            throw Exception("unable to get parameter value")
+        }
+        return parameterValue
+    }
+
+    fun setParameterValue(parameterId : Int, parameterValue: Int) {
+        openScanner()
+
+        val index = intArrayOf(parameterId)
+        val setDisableVibrationSuccessful: Int =
+            scanManager.setParameterInts(index, intArrayOf(parameterValue))
+
+        if (setDisableVibrationSuccessful == 0) {
+            //successful
+        } else {
+            throw Exception("unable to set parameter value")
         }
     }
 

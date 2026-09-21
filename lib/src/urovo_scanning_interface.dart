@@ -3,8 +3,9 @@ import 'dart:typed_data';
 
 import 'package:urovo_scanning/Barcode.dart';
 import 'package:urovo_scanning/Code.dart';
-import 'package:urovo_scanning/Sound.dart';
+import 'package:urovo_scanning/light_mode.dart';
 import 'package:urovo_scanning/scan_mode.dart';
+import 'package:urovo_scanning/sound.dart';
 
 ///this is exist to clarify what the plugin can and cannot do
 abstract class UrovoScanningInterface {
@@ -121,6 +122,19 @@ abstract class UrovoScanningInterface {
 
   ///enable or disables all [Code] that are supported by the scanner
   Future<void> enableAllCodes({required bool enable});
+
+  ///get scanner light mode
+  Future<LightMode> getLightMode();
+
+  ///set scanner light mode
+  Future<void> setLightMode({required LightMode mode});
+
+  ///get scanner configuration property
+  Future<int> getPropertyValue({required int propertyId});
+
+  ///set scanner configuration property
+  Future<void> setPropertyValue({
+    required int propertyId, required int propertyValue});
 
   ///reset all scanner settings to the default
   Future<void> resetScanner();

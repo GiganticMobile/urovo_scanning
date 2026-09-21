@@ -4,6 +4,8 @@ import 'package:urovo_scanning_example/settings_screen/device_compatible_view.da
 import 'package:urovo_scanning_example/settings_screen/reset_scanner_settings.dart';
 import 'package:urovo_scanning_example/settings_screen/scan_buttons_settings_widget.dart';
 import 'package:urovo_scanning_example/settings_screen/scan_mode_settings_widget.dart';
+import 'package:urovo_scanning_example/settings_screen/scanner_light_mode_settings.dart';
+import 'package:urovo_scanning_example/settings_screen/scanner_property_setting.dart';
 import 'package:urovo_scanning_example/settings_screen/scanner_sound_settings.dart';
 import 'package:urovo_scanning_example/settings_screen/scanner_timeout_settings.dart';
 import 'package:urovo_scanning_example/settings_screen/scanner_vibrate_setting.dart';
@@ -30,6 +32,8 @@ class SettingsScreen extends StatelessWidget {
                 ScanButtonsSettingsWidget(),
                 UniversalBarcodeTypeSettings(),
                 BarcodeTypesSettings(),
+                ScannerLightModeSettings(),
+                ScannerPropertySetting(),
                 ResetScannerSettings(),
               ])
             ])

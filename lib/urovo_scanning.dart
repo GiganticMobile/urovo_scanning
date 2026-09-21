@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:urovo_scanning/Barcode.dart' as b;
 import 'package:urovo_scanning/Code.dart' as c;
-import 'package:urovo_scanning/Sound.dart';
+import 'package:urovo_scanning/light_mode.dart';
 import 'package:urovo_scanning/scan_mode.dart';
+import 'package:urovo_scanning/sound.dart';
 import 'package:urovo_scanning/src/scanner_handler.dart';
 import 'package:urovo_scanning/src/urovo_message_interface.g.dart';
 import 'package:urovo_scanning/src/urovo_scanning_interface.dart';
@@ -140,5 +141,26 @@ class UrovoScanning implements UrovoScanningInterface {
   @override
   Future<void> closeScanner() {
     return _scannerHandler.closeScanner();
+  }
+
+  @override
+  Future<LightMode> getLightMode() {
+    return _scannerHandler.getLightMode();
+  }
+
+  @override
+  Future<int> getPropertyValue({required int propertyId}) {
+    return _scannerHandler.getParameterValue(propertyId);
+  }
+
+  @override
+  Future<void> setLightMode({required LightMode mode}) {
+    return _scannerHandler.setLightMode(mode);
+  }
+
+  @override
+  Future<void> setPropertyValue({
+    required int propertyId, required int propertyValue}) {
+    return _scannerHandler.setParameterValue(propertyId, propertyValue);
   }
 }

@@ -62,73 +62,6 @@ class urovo_message_handler : UrovoMessageInterface {
         }
     }
 
-    override fun getTimeOut(callback: (Result<Long>) -> Unit) {
-        try {
-            val scanManager = BarcodeScanManager()
-            val timeout = scanManager.getTimeout()
-            callback.invoke(Result.success(timeout.toLong()))
-        } catch (e : Exception) {
-            callback.invoke(Result.failure(e))
-        }
-    }
-
-    override fun setTimeOut(timeout: Long) {
-        try {
-            val scanManager = BarcodeScanManager()
-            scanManager.setTimeout(timeout.toInt())
-        } catch (e : Exception) {
-            throw FlutterError("set time out", e.message)
-        }
-    }
-
-    override fun getSoundMode(callback: (Result<Long?>) -> Unit) {
-        try {
-            val scanManager = BarcodeScanManager()
-            val sound = scanManager.getSoundSetting()?.toLong()
-            callback.invoke(Result.success(sound))
-        } catch (e : Exception) {
-            callback.invoke(Result.failure(e))
-        }
-    }
-
-    override fun setSoundMode(mode: Long) {
-        try {
-            val scanManager = BarcodeScanManager()
-            scanManager.setSoundMode(mode.toInt())
-        } catch (e : Exception) {
-            throw FlutterError("set sound mode", e.message)
-        }
-    }
-
-    override fun isVibrationEnabled(callback: (Result<Boolean>) -> Unit) {
-        try {
-            val scanManager = BarcodeScanManager()
-
-            val isEnabled = scanManager.isVibrationEnabled()
-            callback.invoke(Result.success(isEnabled))
-        } catch (e : Exception) {
-            callback.invoke(Result.failure(e))
-        }
-    }
-
-    override fun enableVibration() {
-        try {
-            val scanManager = BarcodeScanManager()
-            scanManager.enableVibration()
-        } catch (e : Exception) {
-            throw FlutterError("enable vibration", e.message)
-        }
-    }
-
-    override fun disableVibration() {
-        try {
-            val scanManager = BarcodeScanManager()
-            scanManager.disableVibration()
-        } catch (e : Exception) {
-            throw FlutterError("disable vibration", e.message)
-        }
-    }
-
     override fun isTriggerEnabled(callback: (Result<Boolean>) -> Unit) {
         try {
             val scanManager = BarcodeScanManager()
@@ -231,6 +164,28 @@ class urovo_message_handler : UrovoMessageInterface {
             scanManager.disableAllSymbology()
         } catch (e : Exception) {
             throw FlutterError("disable all codes", e.message)
+        }
+    }
+
+    override fun getParameterValue(
+        id: Long,
+        callback: (Result<Long>) -> Unit
+    ) {
+        try {
+            val scanManager = BarcodeScanManager()
+            val result = scanManager.getParameterValue(id.toInt())
+            callback.invoke(Result.success(result.toLong()))
+        } catch (e : Exception) {
+            callback.invoke(Result.failure(e))
+        }
+    }
+
+    override fun setParameterValue(id: Long, value: Long) {
+        try {
+            val scanManager = BarcodeScanManager()
+            scanManager.setParameterValue(id.toInt(), value.toInt())
+        } catch (e : Exception) {
+            throw FlutterError("set light config", e.message)
         }
     }
 

@@ -342,13 +342,6 @@ interface UrovoMessageInterface {
   fun getDeviceModel(callback: (Result<String>) -> Unit)
   fun startScanning()
   fun stopScanning()
-  fun getTimeOut(callback: (Result<Long>) -> Unit)
-  fun setTimeOut(timeout: Long)
-  fun getSoundMode(callback: (Result<Long?>) -> Unit)
-  fun setSoundMode(mode: Long)
-  fun isVibrationEnabled(callback: (Result<Boolean>) -> Unit)
-  fun enableVibration()
-  fun disableVibration()
   fun isTriggerEnabled(callback: (Result<Boolean>) -> Unit)
   fun enableTrigger()
   fun disableTrigger()
@@ -360,6 +353,8 @@ interface UrovoMessageInterface {
   fun enableAllCodes()
   fun disableCode(codeId: Long)
   fun disableAllCodes()
+  fun getParameterValue(id: Long, callback: (Result<Long>) -> Unit)
+  fun setParameterValue(id: Long, value: Long)
   fun resetScanner()
 
   companion object {
@@ -479,128 +474,6 @@ interface UrovoMessageInterface {
           channel.setMessageHandler { _, reply ->
             val wrapped: List<Any?> = try {
               api.stopScanning()
-              listOf(null)
-            } catch (exception: Throwable) {
-              UrovoMessageInterfacePigeonUtils.wrapError(exception)
-            }
-            reply.reply(wrapped)
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getTimeOut$separatedMessageChannelSuffix", codec)
-        if (api != null) {
-          channel.setMessageHandler { _, reply ->
-            api.getTimeOut{ result: Result<Long> ->
-              val error = result.exceptionOrNull()
-              if (error != null) {
-                reply.reply(UrovoMessageInterfacePigeonUtils.wrapError(error))
-              } else {
-                val data = result.getOrNull()
-                reply.reply(UrovoMessageInterfacePigeonUtils.wrapResult(data))
-              }
-            }
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.setTimeOut$separatedMessageChannelSuffix", codec)
-        if (api != null) {
-          channel.setMessageHandler { message, reply ->
-            val args = message as List<Any?>
-            val timeoutArg = args[0] as Long
-            val wrapped: List<Any?> = try {
-              api.setTimeOut(timeoutArg)
-              listOf(null)
-            } catch (exception: Throwable) {
-              UrovoMessageInterfacePigeonUtils.wrapError(exception)
-            }
-            reply.reply(wrapped)
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getSoundMode$separatedMessageChannelSuffix", codec)
-        if (api != null) {
-          channel.setMessageHandler { _, reply ->
-            api.getSoundMode{ result: Result<Long?> ->
-              val error = result.exceptionOrNull()
-              if (error != null) {
-                reply.reply(UrovoMessageInterfacePigeonUtils.wrapError(error))
-              } else {
-                val data = result.getOrNull()
-                reply.reply(UrovoMessageInterfacePigeonUtils.wrapResult(data))
-              }
-            }
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.setSoundMode$separatedMessageChannelSuffix", codec)
-        if (api != null) {
-          channel.setMessageHandler { message, reply ->
-            val args = message as List<Any?>
-            val modeArg = args[0] as Long
-            val wrapped: List<Any?> = try {
-              api.setSoundMode(modeArg)
-              listOf(null)
-            } catch (exception: Throwable) {
-              UrovoMessageInterfacePigeonUtils.wrapError(exception)
-            }
-            reply.reply(wrapped)
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.isVibrationEnabled$separatedMessageChannelSuffix", codec)
-        if (api != null) {
-          channel.setMessageHandler { _, reply ->
-            api.isVibrationEnabled{ result: Result<Boolean> ->
-              val error = result.exceptionOrNull()
-              if (error != null) {
-                reply.reply(UrovoMessageInterfacePigeonUtils.wrapError(error))
-              } else {
-                val data = result.getOrNull()
-                reply.reply(UrovoMessageInterfacePigeonUtils.wrapResult(data))
-              }
-            }
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.enableVibration$separatedMessageChannelSuffix", codec)
-        if (api != null) {
-          channel.setMessageHandler { _, reply ->
-            val wrapped: List<Any?> = try {
-              api.enableVibration()
-              listOf(null)
-            } catch (exception: Throwable) {
-              UrovoMessageInterfacePigeonUtils.wrapError(exception)
-            }
-            reply.reply(wrapped)
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.disableVibration$separatedMessageChannelSuffix", codec)
-        if (api != null) {
-          channel.setMessageHandler { _, reply ->
-            val wrapped: List<Any?> = try {
-              api.disableVibration()
               listOf(null)
             } catch (exception: Throwable) {
               UrovoMessageInterfacePigeonUtils.wrapError(exception)
@@ -793,6 +666,45 @@ interface UrovoMessageInterface {
           channel.setMessageHandler { _, reply ->
             val wrapped: List<Any?> = try {
               api.disableAllCodes()
+              listOf(null)
+            } catch (exception: Throwable) {
+              UrovoMessageInterfacePigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.getParameterValue$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val idArg = args[0] as Long
+            api.getParameterValue(idArg) { result: Result<Long> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(UrovoMessageInterfacePigeonUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(UrovoMessageInterfacePigeonUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.urovo_scanning_package.UrovoMessageInterface.setParameterValue$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val idArg = args[0] as Long
+            val valueArg = args[1] as Long
+            val wrapped: List<Any?> = try {
+              api.setParameterValue(idArg, valueArg)
               listOf(null)
             } catch (exception: Throwable) {
               UrovoMessageInterfacePigeonUtils.wrapError(exception)

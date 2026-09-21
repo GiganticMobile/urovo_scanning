@@ -3,12 +3,17 @@
 enum Sound {
 
   ///no sound
-  none,
+  none(0),
 
   ///short sound
-  short,
+  short(1),
 
   ///sharp sound
-  sharp,
+  sharp(2);
+
+  const Sound(this.id);
+
+  ///
+  final int id;
 
 }

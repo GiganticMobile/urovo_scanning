@@ -75,5 +75,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.mockito:mockito-core:5.0.0")
     //library available at https://github.com/urovosamples/SDK_ReleaseforAndroid
-    implementation(files("libs/platform_sdk_v4.1.0326.jar"))
+    //implementation(files("libs/platform_sdk_v4.1.0326.jar"))
+    //alternatively go to
+    //https://github.com/urovosamples/scannerapi/blob/main/Library/libs/ScannerSDK.jar
+    implementation(files("libs/ScannerSDK.jar"))
 }

@@ -4,15 +4,20 @@
 ///time out is reached
 enum ScanMode {
   ///The scanner is only in operation as long as the scanning button is pressed
-  host,
+  host(2),
 
   ///The scanner is only in operation for a short period of time after the
   /// scanning button is pressed
-  pulse,
+  pulse(0),
 
   ///The scanner is in operation as soon as the scanning button is
   /// pressed as it only turned off when these buttons are pressed again
-  continuous
+  continuous(1);
+
+  const ScanMode(this.id);
+
+  ///
+  final int id;
 }
 
 /*

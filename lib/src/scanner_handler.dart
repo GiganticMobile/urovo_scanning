@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:urovo_scanning/Barcode.dart' as b;
 import 'package:urovo_scanning/Code.dart' as c;
-import 'package:urovo_scanning/Sound.dart';
+import 'package:urovo_scanning/light_mode.dart';
 import 'package:urovo_scanning/scan_mode.dart';
+import 'package:urovo_scanning/sound.dart';
+import 'package:urovo_scanning/src/property_id.dart';
 import 'package:urovo_scanning/src/urovo_message_interface.g.dart';
 
 ///This handles the logic of converting the scanners response
@@ -132,7 +134,8 @@ class ScannerHandler {
   ///get the maximum amount of time that the scanner can be on for
   Future<double> getTimeout() async {
     try {
-      final time = await _messageHandler.getTimeOut();
+      final time = 
+      await getParameterValue(PropertyId.laserOnTime.id);
 
       //the time is returned in tenths of seconds (i.e. 100ms)
       // so 10 equals 1 second
@@ -153,7 +156,7 @@ class ScannerHandler {
 
     try {
       final scaledTimeOut = (timeout * 10).round();
-      await _messageHandler.setTimeOut(scaledTimeOut);
+      await setParameterValue(PropertyId.laserOnTime.id, scaledTimeOut);
     } on Exception {
       throw Exception('Unable to set time out. '
           'This might be because the device does not have '
@@ -164,18 +167,19 @@ class ScannerHandler {
   ///get what sound the scanner will make if it successfully
   Future<Sound> getSoundMode() async {
     try {
-      final id = await _messageHandler.getSoundMode();
+      final id = await getParameterValue(PropertyId.sendGoodReadBeepEnable.id);
       //0 : None
       //1 : Short
       //2 : Sharp
-      switch(id) {
-        case 0: return Sound.none;
-        case 1: return Sound.short;
-        case 2: return Sound.sharp;
-        default: throw Exception('unknown sound mode');
+      final mode = Sound.values
+          .where((mode) => mode.id == id).firstOrNull;
+      if (mode == null) {
+        throw Exception('unknown sound mode');
+      } else {
+        return mode;
       }
     } on Exception {
-      throw Exception('Unable to set sound mode. '
+      throw Exception('Unable to get sound mode. '
           'This might be because the device does not have '
           'a built in scanner or is not a UROVO device.');
     }
@@ -184,18 +188,9 @@ class ScannerHandler {
   ///set what sound the scanner will make if it successfully
   Future<void> setSoundMode(Sound mode) async {
 
-    final int id;
-    switch(mode) {
-      case Sound.none:
-        id = 0;
-      case Sound.short:
-        id = 1;
-      case Sound.sharp:
-        id = 2;
-    }
-
     try {
-      return _messageHandler.setSoundMode(id);
+      return
+        await setParameterValue(PropertyId.sendGoodReadBeepEnable.id, mode.id);
     } on Exception {
       throw Exception('Unable to set sound mode. '
           'This might be because the device does not have '
@@ -206,7 +201,12 @@ class ScannerHandler {
   ///check if the scanner will vibrate if the scan is successful
   Future<bool> isVibrationEnabled() async {
     try {
-      return _messageHandler.isVibrationEnabled();
+      final result =
+      await getParameterValue(PropertyId.sendGoodReadVibrateEnable.id);
+
+      //0 is disabled
+      //1 is enabled
+      return result == 1;
     } on Exception {
       throw Exception('Unable to find vibration status. '
           'This might be because the device does not have '
@@ -217,11 +217,14 @@ class ScannerHandler {
   ///set if the scanner will vibrate if the scan is successful
   Future<void> enableVibration({required bool enable}) async {
     try {
+      final int vibrate;
       if (enable) {
-        await _messageHandler.enableVibration();
+        vibrate = 1;
       } else {
-        await _messageHandler.disableVibration();
+        vibrate = 0;
       }
+
+      await setParameterValue(PropertyId.sendGoodReadVibrateEnable.id, vibrate);
     } on Exception {
       throw Exception('Unable to set vibration status. '
           'This might be because the device does not have '
@@ -230,9 +233,9 @@ class ScannerHandler {
   }
 
   ///check if the scanner's buttons are enabled
-  Future<bool> isTriggerEnabled() {
+  Future<bool> isTriggerEnabled() async {
     try {
-      return _messageHandler.isTriggerEnabled();
+      return await _messageHandler.isTriggerEnabled();
     } on Exception {
       throw Exception('Unable to find trigger status. '
           'This might be because the device does not have '
@@ -257,31 +260,28 @@ class ScannerHandler {
 
   ///get the current scan mode
   Future<ScanMode> getScanMode() async {
-    final id = await _messageHandler.getScanMode();
-
-    switch(id) {
-      case 0: return ScanMode.pulse;
-      case 1: return ScanMode.continuous;
-      case 2: return ScanMode.host;
-      default: throw Exception('unknown scan mode');
+    try {
+      final id = await _messageHandler.getScanMode();
+      final mode = ScanMode.values
+          .where((mode) => mode.id == id)
+          .firstOrNull;
+      if (mode == null) {
+        throw Exception('unknown scan mode');
+      } else {
+        return mode;
+      }
+    } on Exception catch(_) {
+      throw Exception('Unable to get scan mode. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
     }
   }
 
   ///set the current scan mode
   Future<void> setScanMode(ScanMode mode) async {
 
-    final int id;
-    switch(mode) {
-      case ScanMode.host:
-        id = 2;
-      case ScanMode.pulse:
-        id = 0;
-      case ScanMode.continuous:
-        id = 1;
-    }
-
     try {
-      await _messageHandler.setScanMode(id);
+      await _messageHandler.setScanMode(mode.id);
     } on Exception {
       throw Exception('Unable set scan mode of ${mode.name}. '
           'This might be because the device does not have '
@@ -366,12 +366,66 @@ class ScannerHandler {
     }
   }
 
+  ///get barcode scanner light mode
+  Future<LightMode> getLightMode() async {
+    try {
+      final config = await getParameterValue(PropertyId.dec2dLightsMode.id);
+      final mode = LightMode.values
+          .where((mode) => mode.id == config).firstOrNull;
+      if (mode == null) {
+        throw Exception('unknown light mode');
+      } else {
+        return mode;
+      }
+    } on Exception {
+      throw Exception('Unable to get light mode. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
+  }
+
+  ///set barcode scanner light options
+  Future<void> setLightMode(LightMode mode) async {
+    try {
+      await setParameterValue(PropertyId.dec2dLightsMode.id, mode.id);
+    } on Exception {
+      throw Exception('Unable to set light mode. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
+  }
+
+  ///set parameter value of scanner
+  Future<void> setParameterValue(int propertyId, int value) async {
+    try {
+      await _messageHandler.setParameterValue(propertyId, value);
+    } on Exception {
+      throw Exception(
+          'Unable to set parameter value of $propertyId, to $value. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
+  }
+
+  ///get scanner parameter value
+  Future<int> getParameterValue(int propertyId) async {
+    try {
+      final result = await _messageHandler
+          .getParameterValue(propertyId);
+      return result;
+    } on Exception {
+      throw Exception('Unable to get parameter value of $propertyId. '
+          'This might be because the device does not have '
+          'a built in scanner or is not a UROVO device.');
+    }
+  }
+
   ///reset all scanner settings to the default
   Future<void> resetScanner() async {
     try {
       await _messageHandler.resetScanner();
     } on Exception {
-      throw Exception('Unable rest scanner. '
+      throw Exception('Unable reset scanner. '
           'This might be because the device does not have '
           'a built in scanner or is not a UROVO device.');
     }
