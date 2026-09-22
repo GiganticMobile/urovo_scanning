@@ -142,15 +142,15 @@ The option are none (no sound), short and sharp
   final soundMode = await UrovoScanning().getSoundMode();
   
   if (soundMode == Sound.none) {
-    //no sound on succeful scan
+    //no sound on successful scan
   }
 
   if (soundMode == Sound.short) {
-    //short sound on succeful scan
+    //short sound on successful scan
   }
 
   if (soundMode == Sound.short) {
-    //short sound on succeful scan
+    //short sound on successful scan
   }
 
   await UrovoScanning().setSoundMode(Sound.none);
@@ -255,7 +255,66 @@ Choose which types of barcodes the scanner is allowed to scan.
   
 ```
 
-- reset scanner
+- Set light mode.
+Choose the light mode of the scanner during a scan.
+```dart
+  import 'package:urovo_scanning/urovo_scanning.dart';
+
+  //no lights when scanning
+  await UrovoScanning().setLightMode(mode: LightMode.allOff);
+
+  //only the laser aim assist will turn on
+  await UrovoScanning().setLightMode(mode: LightMode.aimerOnly);
+
+  //only main light will turn on
+  await UrovoScanning().setLightMode(mode: LightMode.illuminationOnly);
+
+  //both the laser aimer and the main light will turn on
+  await UrovoScanning().setLightMode(mode: LightMode.alternating);
+
+  //both the laser aimer and the main light will turn on
+  await UrovoScanning().setLightMode(mode: LightMode.concurrent);
+
+```
+
+- Get light mode.
+  Get the current light mode the scanner is set to.
+```dart
+  import 'package:urovo_scanning/urovo_scanning.dart';
+
+  final mode = await UrovoScanning().getLightMode();
+
+```
+- Set parameter value.
+  A scanner will have a verity of different settings all of which can be
+  set be the following example.
+  See full list of options at https://en.urovo.com/developer/constant-values.html
+```dart
+  import 'package:urovo_scanning/urovo_scanning.dart';
+
+  //id of 40 represents the time out of the scanner
+  final id = 40;
+  //value of 50 represents a 5 second delay before the scanner will
+  //automatically turn off.
+  final value = 50;
+
+  UrovoScanning().setPropertyValue(propertyId: id, propertyValue: value)
+
+```
+
+- Get parameter value.
+  Get any of the scanners settings.
+```dart
+  import 'package:urovo_scanning/urovo_scanning.dart';
+
+  //id of 40 represents the time out of the scanner
+  final id = 40;
+  
+  final value = UrovoScanning().getPropertyValue(propertyId: id);
+
+```
+
+- Reset scanner
 Reset the scanner to it's default settings.
 ```dart
   import 'package:urovo_scanning/urovo_scanning.dart';
