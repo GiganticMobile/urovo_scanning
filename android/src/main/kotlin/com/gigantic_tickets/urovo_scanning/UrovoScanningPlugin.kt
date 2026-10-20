@@ -82,7 +82,7 @@ class UrovoScanningPlugin : FlutterPlugin {
         if (ctx != null && imageRec != null) {
             BarcodeImageReceiver.unregister(ctx, imageRec)
         }
-        scanManager.stopListening()
+        //scanManager.stopListening()
         context = null
     }
 }
